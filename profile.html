@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Profile & Store — BridgeP2P</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --brand: #0D47A1;
+      --brand-light: #1565C0;
+      --brand-dark: #0A2E6E;
+      --accent: #FF6F00;
+      --bg: #F8F9FF;
+      --surface: #FFFFFF;
+      --border: #E0E7FF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --success: #16A34A;
+      --danger: #DC2626;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .navbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .navbar-brand { font-size: 1.4rem; font-weight: 900; color: var(--brand); }
+    .navbar-brand span { color: var(--accent); }
+    .navbar-right { display: flex; gap: 16px; align-items: center; }
+    .btn-logout { background: none; border: 1.5px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--muted); transition: all 0.2s; }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    .page-header { margin-bottom: 32px; }
+    .page-title { font-size: 2rem; font-weight: 900; margin-bottom: 4px; }
+    .page-subtitle { color: var(--muted); font-size: 0.95rem; }
+    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+    @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } }
+    .sidebar { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 0; overflow: hidden; height: fit-content; position: sticky; top: 80px; }
+    .sidebar-section { border-bottom: 1px solid var(--border); }
+    .sidebar-section:last-child { border-bottom: none; }
+    .sidebar-header { padding: 16px 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); background: var(--bg); }
+    .sidebar-link { display: block; padding: 12px 20px; text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 500; border-left: 3px solid transparent; transition: all 0.2s; cursor: pointer; }
+    .sidebar-link:hover, .sidebar-link.active { background: var(--bg); color: var(--brand); border-left-color: var(--brand); }
+    .main-content { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 28px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-item { background: var(--bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); }
+    .info-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+    .info-value { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .info-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .form-input, .form-textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; color: var(--text); outline: none; transition: border-color 0.2s; }
+    .form-input:focus, .form-textarea:focus { border-color: var(--brand); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-hint { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .btn-group { display: flex; gap: 12px; }
+    .btn { padding: 11px 20px; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-light); }
+    .btn-secondary { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #B91C1C; }
+    .stat-box { background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%); color: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+    .stat-box h3 { font-size: 0.85rem; opacity: 0.85; margin-bottom: 8px; }
+    .stat-box .stat-value { font-size: 2rem; font-weight: 900; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-success { background: #DCFCE7; color: var(--success); }
+    .badge-warning { background: #FEF3C7; color: #D97706; }
+    .badge-danger { background: #FEE2E2; color: var(--danger); }
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-header h4 { font-size: 0.95rem; font-weight: 700; }
+    .alert { padding: 14px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; display: none; }
+    .alert.show { display: block; }
+    .alert-success { background: #DCFCE7; border: 1px solid #86EFAC; color: var(--success); }
+    .alert-danger { background: #FEE2E2; border: 1px solid #FECACA; color: var(--danger); }
+    .alert-info { background: #DBEAFE; border: 1px solid #BAE6FD; color: var(--brand); }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .two-factor-setup { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 16px 0; }
+    .security-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: 8px; margin-bottom: 12px; }
+    .security-item-info h5 { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
+    .security-item-info p { font-size: 0.8rem; color: var(--muted); }
+    .toggle { position: relative; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #CBD5E1; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: 0.3s; }
+    .toggle input:checked + .toggle-slider { background: var(--brand); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">Bridge<span>P2P</span></div>
+  <div class="navbar-right">
+    <span id="userEmail" style="color: var(--muted); font-size: 0.9rem;">—</span>
+    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title">Your Account</h1>
+    <p class="page-subtitle">Manage your profile, store settings, and security</p>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-header">Account</div>
+        <a class="sidebar-link active" onclick="showPanel('profile')">👤 Profile</a>
+        <a class="sidebar-link" onclick="showPanel('store')">🏪 Your Store</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-header">Settings</div>
+        <a class="sidebar-link" onclick="showPanel('security')">🔒 Security</a>
+        <a class="sidebar-link" onclick="showPanel('notifications')">🔔 Notifications</a>
+        <a class="sidebar-link" onclick="showPanel('subscription')">💳 Subscription</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-header">Support</div>
+        <a class="sidebar-link" href="https://docs.bridgep2p.com" target="_blank">📚 Documentation</a>
+        <a class="sidebar-link" href="mailto:support@bridgep2p.com">✉️ Contact Support</a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- ALERTS -->
+      <div class="alert alert-success" id="alertSuccess"></div>
+      <div class="alert alert-danger" id="alertDanger"></div>
+      <div class="alert alert-info" id="alertInfo"></div>
+
+      <!-- PROFILE PANEL -->
+      <div class="panel active" id="panel-profile">
+        <div class="section">
+          <div class="section-title">Profile Information</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value" id="profileName">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email Address</div>
+              <div class="info-value" id="profileEmail">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Account Status</div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                <div class="badge badge-success" id="accountStatus">Active</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Member Since</div>
+              <div class="info-value" id="profileJoined">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Edit Profile</div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" id="editName" placeholder="Your full name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea class="form-textarea" id="editBio" placeholder="Tell us about yourself (optional)"></textarea>
+            <div class="form-hint">Visible on your public seller profile</div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="updateProfile()">💾 Save Profile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORE PANEL -->
+      <div class="panel" id="panel-store">
+        <div class="section">
+          <div class="section-title">Your Store</div>
+          <div class="stat-box">
+            <h3>Store Status</h3>
+            <div class="stat-value" id="storeStatus">Setup Pending</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="card-header">
+            <h4>Store Settings</h4>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store Name</label>
+            <input class="form-input" id="storeName" placeholder="Your Store Name" />
+            <div class="form-hint">This is how customers will see your store</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store Description</label>
+            <textarea class="form-textarea" id="storeDesc" placeholder="Describe what you sell and who you help"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store URL Slug</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span style="color: var(--muted); font-size: 0.9rem;">bridgep2p.com/store/</span>
+              <input class="form-input" id="storeSlug" placeholder="your-store-name" style="max-width: 250px;" />
+            </div>
+            <div class="form-hint">Letters, numbers, and hyphens only. This becomes your unique store URL.</div>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="setupStore()">🏪 Setup My Store</button>
+          </div>
+        </div>
+
+        <div class="section" id="storeAnalyticsSection" style="display: none;">
+          <div class="section-title">Store Analytics</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Total Sales</div>
+              <div class="info-value" id="totalSales">$0.00</div>
+              <div class="info-desc">All time</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Total Orders</div>
+              <div class="info-value" id="totalOrders">0</div>
+              <div class="info-desc">All time</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Active Products</div>
+              <div class="info-value" id="activeProducts">0</div>
+              <div class="info-desc">Currently selling</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Commission Rate</div>
+              <div class="info-value" id="commissionRate">5%</div>
+              <div class="info-desc">BridgeP2P takes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Payout Settings</div>
+          <div class="card">
+            <div class="card-header">
+              <h4>Payment Method</h4>
+              <span id="paymentStatus" class="badge badge-warning">Not Set</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stripe Connected Account</label>
+              <button class="btn btn-primary" onclick="connectStripe()" id="stripeBtn">🔗 Connect Stripe</button>
+              <div class="form-hint">We use Stripe for secure payouts to your bank account</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECURITY PANEL -->
+      <div class="panel" id="panel-security">
+        <div class="section">
+          <div class="section-title">Security Settings</div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Password</h5>
+              <p>Change your password regularly to keep your account secure</p>
+            </div>
+            <button class="btn btn-secondary" onclick="showChangePassword()">Change</button>
+          </div>
+
+          <div id="changePasswordForm" style="display: none; margin: 16px 0; padding: 16px; background: var(--bg); border-radius: 8px;">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input class="form-input" type="password" id="currentPass" placeholder="••••••••" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input class="form-input" type="password" id="newPass" placeholder="••••••••" />
+              <div class="form-hint">Minimum 8 characters with letters, numbers, and symbols</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input class="form-input" type="password" id="confirmPass" placeholder="••••••••" />
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="updatePassword()">Update Password</button>
+              <button class="btn btn-secondary" onclick="hideChangePassword()">Cancel</button>
+            </div>
+          </div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Two-Factor Authentication (2FA)</h5>
+              <p id="twoFAStatus">Not enabled — Add extra security to your account</p>
+            </div>
+            <button class="btn btn-secondary" id="twoFABtn" onclick="setup2FA()">Enable 2FA</button>
+          </div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Active Sessions</h5>
+              <p>Manage devices that have access to your account</p>
+            </div>
+            <button class="btn btn-secondary" onclick="showSessions()">View Sessions</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Danger Zone</div>
+          <div class="card" style="border-color: var(--danger); background: #FEF2F2;">
+            <div class="card-header">
+              <div>
+                <h4>Delete Account</h4>
+                <p style="font-size: 0.85rem; color: var(--danger); margin-top: 4px;">This action cannot be undone. All your data will be permanently deleted.</p>
+              </div>
+            </div>
+            <button class="btn btn-danger" onclick="confirmDeleteAccount()">🗑️ Delete My Account</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS PANEL -->
+      <div class="panel" id="panel-notifications">
+        <div class="section">
+          <div class="section-title">Notification Preferences</div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Order Alerts</h5>
+              <p>Get notified when someone buys from your store</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked id="notifyOrders" onchange="saveNotifications()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Payout Notifications</h5>
+              <p>Get notified when payouts are processed</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked id="notifyPayouts" onchange="saveNotifications()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Product Reviews</h5>
+              <p>Get notified when customers leave reviews</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked id="notifyReviews" onchange="saveNotifications()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="security-item">
+            <div class="security-item-info">
+              <h5>Marketing Emails</h5>
+              <p>Receive tips, updates, and special offers</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked id="notifyMarketing" onchange="saveNotifications()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBSCRIPTION PANEL -->
+      <div class="panel" id="panel-subscription">
+        <div class="section">
+          <div class="section-title">Subscription Plan</div>
+          <div class="stat-box">
+            <h3>Current Plan</h3>
+            <div class="stat-value" id="planName">Free Trial</div>
+            <p style="margin-top: 8px; opacity: 0.85;" id="planDetails">14-day free trial • Expires in 10 days</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Available Plans</div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h4>💰 Pro Plan</h4>
+                <p style="font-size: 0.85rem; color: var(--muted); margin-top: 4px;">$29/month after free trial</p>
+              </div>
+              <button class="btn btn-primary" onclick="upgradePlan('pro')">Upgrade Now</button>
+            </div>
+            <ul style="list-style: none; padding: 0;">
+              <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;">✓ Unlimited products</li>
+              <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;">✓ Advanced analytics</li>
+              <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;">✓ Email marketing tools</li>
+              <li style="padding: 8px 0; font-size: 0.9rem;">✓ Priority support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyBfWhx4Bvxjx3kFECDbBQtfM1RoVqQ8qfA",
+    authDomain: "p2p-ebook-empire.firebaseapp.com",
+    projectId: "p2p-ebook-empire",
+    storageBucket: "p2p-ebook-empire.firebasestorage.app",
+    messagingSenderId: "570621574553",
+    appId: "1:570621574553:web:8f4693194ce36a541aa708"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+
+  var currentUser = null;
+  var userProfile = null;
+
+  // ── AUTH CHECK ──────────────────────────────────────
+  auth.onAuthStateChanged(function(user) {
+    if (!user) {
+      window.location.href = 'auth.html';
+      return;
+    }
+    currentUser = user;
+    document.getElementById('userEmail').textContent = user.email;
+    loadUserProfile();
+  });
+
+  // ── LOAD USER PROFILE ───────────────────────────────
+  function loadUserProfile() {
+    if (!currentUser) return;
+    db.collection('users').doc(currentUser.uid).get()
+      .then(doc => {
+        if (doc.exists) {
+          userProfile = doc.data();
+          renderProfile();
+        } else {
+          createUserProfile();
+        }
+      })
+      .catch(err => showAlert('danger', 'Error loading profile: ' + err.message));
+  }
+
+  function createUserProfile() {
+    var newProfile = {
+      uid: currentUser.uid,
+      email: currentUser.email,
+      name: currentUser.displayName || 'User',
+      bio: '',
+      plan: 'trial',
+      trialStart: new Date().toISOString(),
+      trialEnd: new Date(Date.now() + 14*24*60*60*1000).toISOString(),
+      storeSetup: false,
+      storeName: '',
+      storeSlug: '',
+      storeDesc: '',
+      totalSales: 0,
+      totalOrders: 0,
+      commission: 0.05,
+      stripeConnected: false,
+      twoFAEnabled: false,
+      notifications: {
+        orders: true,
+        payouts: true,
+        reviews: true,
+        marketing: true
+      },
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('users').doc(currentUser.uid).set(newProfile)
+      .then(() => {
+        userProfile = newProfile;
+        renderProfile();
+      })
+      .catch(err => showAlert('danger', 'Error creating profile: ' + err.message));
+  }
+
+  function renderProfile() {
+    document.getElementById('profileName').textContent = userProfile.name || '—';
+    document.getElementById('profileEmail').textContent = userProfile.email;
+    document.getElementById('editName').value = userProfile.name || '';
+    document.getElementById('editBio').value = userProfile.bio || '';
+    document.getElementById('profileJoined').textContent = new Date(userProfile.createdAt?.toDate?.() || new Date()).toLocaleDateString();
+    
+    document.getElementById('storeName').value = userProfile.storeName || '';
+    document.getElementById('storeDesc').value = userProfile.storeDesc || '';
+    document.getElementById('storeSlug').value = userProfile.storeSlug || '';
+    
+    if (userProfile.storeSetup) {
+      document.getElementById('storeStatus').textContent = '✓ Active';
+      document.getElementById('storeAnalyticsSection').style.display = 'block';
+      document.getElementById('totalSales').textContent = '$' + (userProfile.totalSales || 0).toFixed(2);
+      document.getElementById('totalOrders').textContent = userProfile.totalOrders || '0';
+    }
+
+    if (userProfile.stripeConnected) {
+      document.getElementById('paymentStatus').className = 'badge badge-success';
+      document.getElementById('paymentStatus').textContent = 'Connected';
+      document.getElementById('stripeBtn').textContent = '✓ Stripe Connected';
+      document.getElementById('stripeBtn').disabled = true;
+    }
+
+    if (userProfile.twoFAEnabled) {
+      document.getElementById('twoFAStatus').textContent = '✓ Enabled — Your account is extra secure';
+      document.getElementById('twoFABtn').textContent = 'Disable 2FA';
+    }
+
+    // Notifications
+    document.getElementById('notifyOrders').checked = userProfile.notifications?.orders ?? true;
+    document.getElementById('notifyPayouts').checked = userProfile.notifications?.payouts ?? true;
+    document.getElementById('notifyReviews').checked = userProfile.notifications?.reviews ?? true;
+    document.getElementById('notifyMarketing').checked = userProfile.notifications?.marketing ?? true;
+
+    // Plan
+    var trialEnd = new Date(userProfile.trialEnd);
+    var daysLeft = Math.ceil((trialEnd - new Date()) / (1000*60*60*24));
+    document.getElementById('planDetails').textContent = '14-day free trial • Expires in ' + Math.max(0, daysLeft) + ' days';
+  }
+
+  // ── PANEL NAVIGATION ────────────────────────────────
+  function showPanel(panelName) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('panel-' + panelName).classList.add('active');
+    event.target.closest('.sidebar-link').classList.add('active');
+  }
+
+  // ── PROFILE UPDATE ──────────────────────────────────
+  function updateProfile() {
+    var name = document.getElementById('editName').value.trim();
+    var bio = document.getElementById('editBio').value.trim();
+    
+    if (!name) { showAlert('danger', 'Name is required'); return; }
+
+    db.collection('users').doc(currentUser.uid).update({
+      name: name,
+      bio: bio
+    })
+    .then(() => {
+      userProfile.name = name;
+      userProfile.bio = bio;
+      currentUser.updateProfile({displayName: name});
+      showAlert('success', '✓ Profile updated successfully');
+      renderProfile();
+    })
+    .catch(err => showAlert('danger', 'Error updating profile: ' + err.message));
+  }
+
+  // ── STORE SETUP ─────────────────────────────────────
+  function setupStore() {
+    var storeName = document.getElementById('storeName').value.trim();
+    var storeSlug = document.getElementById('storeSlug').value.trim();
+    var storeDesc = document.getElementById('storeDesc').value.trim();
+
+    if (!storeName) { showAlert('danger', 'Store name is required'); return; }
+    if (!storeSlug) { showAlert('danger', 'Store URL slug is required'); return; }
+    if (!/^[a-z0-9-]+$/.test(storeSlug)) { showAlert('danger', 'Store slug can only contain letters, numbers, and hyphens'); return; }
+
+    db.collection('users').doc(currentUser.uid).update({
+      storeName: storeName,
+      storeSlug: storeSlug,
+      storeDesc: storeDesc,
+      storeSetup: true,
+      storeCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      showAlert('success', '✓ Store created! Your store is now live at bridgep2p.com/store/' + storeSlug);
+      userProfile.storeSetup = true;
+      renderProfile();
+    })
+    .catch(err => showAlert('danger', 'Error setting up store: ' + err.message));
+  }
+
+  // ── CHANGE PASSWORD ─────────────────────────────────
+  function showChangePassword() {
+    document.getElementById('changePasswordForm').style.display = 'block';
+  }
+
+  function hideChangePassword() {
+    document.getElementById('changePasswordForm').style.display = 'none';
+    document.getElementById('currentPass').value = '';
+    document.getElementById('newPass').value = '';
+    document.getElementById('confirmPass').value = '';
+  }
+
+  function updatePassword() {
+    var newPass = document.getElementById('newPass').value;
+    var confirmPass = document.getElementById('confirmPass').value;
+
+    if (newPass.length < 8) { showAlert('danger', 'Password must be at least 8 characters'); return; }
+    if (newPass !== confirmPass) { showAlert('danger', 'Passwords do not match'); return; }
+
+    currentUser.updatePassword(newPass)
+      .then(() => {
+        showAlert('success', '✓ Password updated successfully');
+        hideChangePassword();
+      })
+      .catch(err => showAlert('danger', 'Error: ' + friendlyError(err.code)));
+  }
+
+  // ── 2FA SETUP ───────────────────────────────────────
+  function setup2FA() {
+    showAlert('info', '2FA setup coming soon. For now, enable 2FA in Google account settings.');
+  }
+
+  // ── NOTIFICATIONS ───────────────────────────────────
+  function saveNotifications() {
+    var prefs = {
+      orders: document.getElementById('notifyOrders').checked,
+      payouts: document.getElementById('notifyPayouts').checked,
+      reviews: document.getElementById('notifyReviews').checked,
+      marketing: document.getElementById('notifyMarketing').checked
+    };
+    db.collection('users').doc(currentUser.uid).update({notifications: prefs})
+      .then(() => showAlert('success', '✓ Notification preferences saved'))
+      .catch(err => showAlert('danger', 'Error saving preferences: ' + err.message));
+  }
+
+  // ── STRIPE CONNECT ──────────────────────────────────
+  function connectStripe() {
+    showAlert('info', 'Stripe integration coming soon. Visit dashboard.stripe.com to set up your account.');
+  }
+
+  // ── UPGRADE PLAN ────────────────────────────────────
+  function upgradePlan(plan) {
+    showAlert('info', 'Plan upgrades available after free trial ends.');
+  }
+
+  // ── LOGOUT ──────────────────────────────────────────
+  function doLogout() {
+    auth.signOut().then(() => window.location.href = 'index.html');
+  }
+
+  // ── ALERTS ──────────────────────────────────────────
+  function showAlert(type, msg) {
+    var el = document.getElementById('alert' + type.charAt(0).toUpperCase() + type.slice(1));
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  function friendlyError(code) {
+    var msgs = {
+      'auth/requires-recent-login': 'Please sign out and sign in again, then try updating your password.',
+      'auth/weak-password': 'Password is too weak. Use 8+ characters with numbers and symbols.',
+      'auth/wrong-password': 'Incorrect current password.'
+    };
+    return msgs[code] || 'An error occurred: ' + code;
+  }
+
+  function confirmDeleteAccount() {
+    if (confirm('⚠️  This will permanently delete your account and all data. Type your email to confirm:')) {
+      var email = prompt('Type your email: ' + currentUser.email);
+      if (email === currentUser.email) {
+        currentUser.delete().then(() => {
+          db.collection('users').doc(currentUser.uid).delete();
+          window.location.href = 'index.html';
+        });
+      }
+    }
+  }
+
+  function showSessions() {
+    showAlert('info', 'Session management coming soon.');
+  }
+</script>
+
+</body>
+</html>
