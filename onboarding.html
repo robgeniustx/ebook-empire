@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set Up Your Store — P2P ebook empire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--brand:#0D47A1;--brand-light:#1565C0;--brand-dark:#0A2E6E;--accent:#FF6F00;--bg:#F8F9FF;--surface:#FFFFFF;--border:#E0E7FF;--text:#0F172A;--muted:#64748B;--success:#16A34A;--danger:#DC2626}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    .topbar{background:var(--brand-dark);padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:1.3rem;font-weight:900;color:#fff;text-decoration:none}
+    .logo span{color:var(--accent)}
+    .step-count{font-size:0.82rem;color:rgba(255,255,255,0.65);font-weight:600}
+    .wrapper{max-width:700px;margin:0 auto;padding:40px 20px 60px}
+
+    /* Progress */
+    .progress-bar{background:var(--border);border-radius:8px;height:8px;margin-bottom:40px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:8px;transition:width 0.5s ease}
+    .steps-row{display:flex;justify-content:space-between;margin-bottom:36px}
+    .step-dot{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+    .dot{width:36px;height:36px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:var(--muted);transition:all 0.3s;border:2px solid var(--border)}
+    .dot.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .dot.done{background:var(--success);color:#fff;border-color:var(--success)}
+    .step-label{font-size:0.68rem;font-weight:600;color:var(--muted);text-align:center;max-width:70px;line-height:1.3}
+    .step-label.active{color:var(--brand)}
+    .step-label.done{color:var(--success)}
+
+    /* Panels */
+    .step-panel{display:none}
+    .step-panel.active{display:block}
+
+    .panel-header{margin-bottom:28px}
+    .panel-header .step-num{font-size:0.75rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .panel-header h2{font-size:1.9rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:8px}
+    .panel-header p{color:var(--muted);font-size:0.95rem;line-height:1.6}
+
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:0.83rem;font-weight:700;margin-bottom:7px;color:var(--text)}
+    .form-hint{font-size:0.75rem;color:var(--muted);margin-top:5px}
+    .form-input,.form-select,.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.95rem;outline:none;transition:border-color 0.2s;font-family:inherit;color:var(--text)}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--brand)}
+    .form-textarea{resize:vertical;min-height:90px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    /* Color picker */
+    .color-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .color-opt{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.2s}
+    .color-opt:hover,.color-opt.selected{border-color:var(--text);transform:scale(1.1)}
+    .color-opt.selected{border-color:var(--brand)}
+
+    /* Preview card */
+    .store-preview{background:linear-gradient(135deg,#0A2E6E,#1565C0);border-radius:16px;padding:24px;margin:20px 0;color:#fff;position:relative;overflow:hidden}
+    .store-preview::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,111,0,0.12);top:-60px;right:-60px}
+    .preview-store-name{font-size:1.6rem;font-weight:900;margin-bottom:4px}
+    .preview-tagline{font-size:0.82rem;opacity:0.7;margin-bottom:16px}
+    .preview-url{background:rgba(255,255,255,0.12);border-radius:6px;padding:5px 12px;font-size:0.78rem;font-family:monospace;display:inline-block}
+
+    /* Product setup */
+    .product-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+    .product-type-opt{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:18px 16px;cursor:pointer;transition:all 0.2s;text-align:center}
+    .product-type-opt:hover,.product-type-opt.selected{border-color:var(--brand);background:#EFF6FF}
+    .product-type-opt .pto-icon{font-size:1.8rem;margin-bottom:8px}
+    .product-type-opt .pto-name{font-size:0.88rem;font-weight:700}
+    .product-type-opt .pto-desc{font-size:0.75rem;color:var(--muted);margin-top:3px}
+
+    /* Stripe step */
+    .stripe-steps{counter-reset:stripe-step}
+    .stripe-step{display:flex;gap:14px;padding:16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:10px;align-items:flex-start}
+    .stripe-step-num{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:800;flex-shrink:0}
+    .stripe-step-text h4{font-size:0.88rem;font-weight:700;margin-bottom:3px}
+    .stripe-step-text p{font-size:0.78rem;color:var(--muted)}
+    .stripe-step-text a{color:var(--brand);font-weight:600}
+
+    /* Completion */
+    .completion-card{background:linear-gradient(145deg,var(--brand-dark),var(--brand));border-radius:20px;padding:44px 36px;text-align:center;color:#fff}
+    .completion-icon{font-size:3.5rem;margin-bottom:16px}
+    .completion-card h2{font-size:2rem;font-weight:900;margin-bottom:12px;letter-spacing:-0.5px}
+    .completion-card p{font-size:1rem;opacity:0.85;margin-bottom:28px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
+    .completion-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .comp-link{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:10px;padding:12px 22px;font-size:0.9rem;font-weight:700;text-decoration:none;transition:background 0.2s}
+    .comp-link:hover{background:rgba(255,255,255,0.25)}
+    .comp-link.primary{background:var(--accent);border-color:var(--accent)}
+    .comp-link.primary:hover{background:#FF8F00}
+    .checklist{text-align:left;max-width:360px;margin:0 auto 28px;list-style:none}
+    .checklist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.88rem}
+    .checklist li::before{content:'✓';background:rgba(22,163,74,0.3);color:#4ADE80;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+
+    /* Navigation */
+    .nav-buttons{display:flex;justify-content:space-between;margin-top:32px;gap:12px}
+    .btn-back{background:none;border:2px solid var(--border);border-radius:10px;padding:13px 24px;font-size:0.95rem;font-weight:700;cursor:pointer;color:var(--muted);transition:all 0.2s;font-family:inherit}
+    .btn-back:hover{border-color:var(--brand);color:var(--brand)}
+    .btn-next{background:var(--brand);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:0.95rem;font-weight:800;cursor:pointer;transition:background 0.2s;font-family:inherit;display:flex;align-items:center;gap:8px}
+    .btn-next:hover{background:var(--brand-light)}
+    .btn-skip{background:none;border:none;font-size:0.82rem;color:var(--muted);cursor:pointer;font-family:inherit;text-decoration:underline}
+
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--success);color:#fff;border-radius:10px;padding:12px 20px;font-weight:600;font-size:0.85rem;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:99;transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    @media(max-width:540px){.form-grid{grid-template-columns:1fr}.product-type-grid{grid-template-columns:1fr}.steps-row{gap:8px}.step-label{display:none}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="landing.html" class="logo">Bridge<span>P2P</span></a>
+  <div class="step-count" id="stepCount">Step 1 of 5</div>
+</div>
+
+<div class="wrapper">
+  <!-- PROGRESS -->
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+
+  <div class="steps-row">
+    <div class="step-dot" onclick="goToStep(0)"><div class="dot active" id="dot0">1</div><div class="step-label active" id="lbl0">Store Name</div></div>
+    <div class="step-dot" onclick="goToStep(1)"><div class="dot" id="dot1">2</div><div class="step-label" id="lbl1">Branding</div></div>
+    <div class="step-dot" onclick="goToStep(2)"><div class="dot" id="dot2">3</div><div class="step-label" id="lbl2">First Product</div></div>
+    <div class="step-dot" onclick="goToStep(3)"><div class="dot" id="dot3">4</div><div class="step-label" id="lbl3">Stripe Pay</div></div>
+    <div class="step-dot" onclick="goToStep(4)"><div class="dot" id="dot4">5</div><div class="step-label" id="lbl4">Go Live!</div></div>
+  </div>
+
+  <!-- ── STEP 1: STORE NAME ── -->
+  <div class="step-panel active" id="step0">
+    <div class="panel-header">
+      <div class="step-num">Step 1 of 5</div>
+      <h2>What's Your Store Called?</h2>
+      <p>This is your brand. Pick something that represents who you are and what you're selling. You can always change it later.</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Store Name *</label>
+      <input class="form-input" id="storeName" placeholder="e.g. The Hustle Blueprint, Rise Up Academy..." oninput="updatePreview()" />
+      <div class="form-hint">Keep it short, memorable, and tied to your niche.</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Store Tagline <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <input class="form-input" id="storeTagline" placeholder="e.g. Knowledge that pays. Built for real people." oninput="updatePreview()" />
+      <div class="form-hint">One sentence that tells visitors exactly what they're getting.</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Store URL will be</label>
+      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.88rem;font-family:monospace;color:var(--muted)">
+        p2pebookempire.com/store/<strong id="urlPreview" style="color:var(--brand)">your-store</strong>
+      </div>
+    </div>
+    <div class="store-preview" id="storePreview">
+      <div class="preview-store-name" id="previewName">Your Store Name</div>
+      <div class="preview-tagline" id="previewTagline">Your tagline appears here</div>
+      <div class="preview-url" id="previewUrl">p2pebookempire.com/store/your-store</div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-skip" onclick="skipStep()">Skip for now</button>
+      <button class="btn-next" onclick="nextStep()">Next: Branding →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: BRANDING ── -->
+  <div class="step-panel" id="step1">
+    <div class="panel-header">
+      <div class="step-num">Step 2 of 5</div>
+      <h2>Brand Your Store</h2>
+      <p>Choose your colors and describe what you sell. This sets the tone for every customer who visits your store.</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Primary Brand Color</label>
+      <div class="color-options" id="colorOptions">
+        <div class="color-opt selected" style="background:#0D47A1" data-color="#0D47A1" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#065F46" data-color="#065F46" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#7C1D1D" data-color="#7C1D1D" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#3B0764" data-color="#3B0764" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#92400E" data-color="#92400E" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#0F172A" data-color="#0F172A" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#FF6F00" data-color="#FF6F00" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:#1E293B" data-color="#1E293B" onclick="selectColor(this)"></div>
+        <div class="color-opt" style="background:linear-gradient(135deg,#0A2E6E,#FF6F00)" data-color="#0A2E6E" title="P2P ebook empire Default" onclick="selectColor(this)"></div>
+      </div>
+      <div class="form-hint">Your brand color will be used on your storefront hero section and accents.</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">What Do You Sell? <span style="font-weight:400;color:var(--muted)">(pick all that apply)</span></label>
+      <div class="product-type-grid">
+        <div class="product-type-opt selected" data-type="ebook" onclick="toggleType(this)">
+          <div class="pto-icon">📗</div>
+          <div class="pto-name">E-Books</div>
+          <div class="pto-desc">PDFs, guides, workbooks</div>
+        </div>
+        <div class="product-type-opt" data-type="course" onclick="toggleType(this)">
+          <div class="pto-icon">🎓</div>
+          <div class="pto-name">Courses</div>
+          <div class="pto-desc">Video, audio, modules</div>
+        </div>
+        <div class="product-type-opt" data-type="templates" onclick="toggleType(this)">
+          <div class="pto-icon">🛠️</div>
+          <div class="pto-name">Templates</div>
+          <div class="pto-desc">Business tools, docs, scripts</div>
+        </div>
+        <div class="product-type-opt" data-type="membership" onclick="toggleType(this)">
+          <div class="pto-icon">👑</div>
+          <div class="pto-name">Memberships</div>
+          <div class="pto-desc">Monthly subscriptions, community</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Who Is Your Audience?</label>
+      <input class="form-input" id="audience" placeholder="e.g. People rebuilding after incarceration, first-time entrepreneurs, young professionals..." />
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-next" onclick="nextStep()">Next: First Product →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: FIRST PRODUCT ── -->
+  <div class="step-panel" id="step2">
+    <div class="panel-header">
+      <div class="step-num">Step 3 of 5</div>
+      <h2>Add Your First Product</h2>
+      <p>Don't overthink it. Put your best thing in here and get it live. You can always add more products later from your dashboard.</p>
+    </div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Product Title *</label>
+        <input class="form-input" id="p1Title" placeholder="e.g. The Discipline Code, Re-Entry Roadmap Guide..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="p1Category">
+          <option value="ebook">E-Book</option>
+          <option value="course">Course</option>
+          <option value="templates">Templates</option>
+          <option value="membership">Membership</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price ($)</label>
+        <input class="form-input" id="p1Price" type="number" placeholder="19.97" min="0.99" step="0.01" />
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Short Description (1–2 sentences)</label>
+        <textarea class="form-textarea" id="p1Desc" placeholder="Tell customers what's inside and why it's worth buying. Be specific about the transformation they'll get."></textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Download File URL <span style="font-weight:400;color:var(--muted)">(Google Drive, Dropbox, etc.)</span></label>
+        <input class="form-input" id="p1Download" placeholder="https://drive.google.com/file/d/..." />
+        <div class="form-hint">Upload your PDF/zip to Google Drive → Share → "Anyone with the link" → Copy URL</div>
+      </div>
+    </div>
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px 16px;font-size:0.83rem;color:#166534;margin-top:4px">
+      💡 <strong>Don't have a product ready?</strong> Skip this step — you can add products from your admin dashboard after setup. Or click "Open Template Designer" to create your e-book cover right now.
+      <br/><a href="editor.html" target="_blank" style="color:var(--brand);font-weight:700;margin-top:6px;display:inline-block">🎨 Open Template Designer →</a>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-skip" onclick="skipStep()">Skip for now</button>
+      <button class="btn-next" onclick="nextStep()">Next: Connect Stripe →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: STRIPE ── -->
+  <div class="step-panel" id="step3">
+    <div class="panel-header">
+      <div class="step-num">Step 4 of 5</div>
+      <h2>Connect Your Payments</h2>
+      <p>P2P ebook empire uses Stripe to process all payments. It's free to set up — you only pay 2.9% + 30¢ per transaction (Stripe's fee, not ours). Our 5% commission is separate.</p>
+    </div>
+
+    <div class="stripe-steps">
+      <div class="stripe-step">
+        <div class="stripe-step-num">1</div>
+        <div class="stripe-step-text">
+          <h4>Create a free Stripe account</h4>
+          <p>Go to <a href="https://stripe.com" target="_blank">stripe.com</a> → Click "Start now" → Sign up with your email. Takes 2 minutes. You'll need to verify your identity to receive payouts.</p>
+        </div>
+      </div>
+      <div class="stripe-step">
+        <div class="stripe-step-num">2</div>
+        <div class="stripe-step-text">
+          <h4>Create a Payment Link for each product</h4>
+          <p>In Stripe Dashboard → <strong>Payment Links</strong> → <strong>+ New</strong> → Set price → Under "Confirmation page" → select "Redirect to website" → Enter: <code style="background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:0.78rem">https://yourdomain.com/success.html?product=1</code></p>
+        </div>
+      </div>
+      <div class="stripe-step">
+        <div class="stripe-step-num">3</div>
+        <div class="stripe-step-text">
+          <h4>Paste your Stripe Payment Link below</h4>
+          <p>Copy the link (looks like <code style="background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:0.78rem">https://buy.stripe.com/...</code>) and paste it for your first product.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:20px">
+      <label class="form-label">Stripe Payment Link for Your First Product</label>
+      <input class="form-input" id="stripeLink" placeholder="https://buy.stripe.com/..." />
+      <div class="form-hint">You can also add this later from Admin → Products → Edit.</div>
+    </div>
+
+    <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:14px 16px;font-size:0.82rem;color:#92400E;margin-top:4px">
+      ⚠️ <strong>Important:</strong> P2P ebook empire never handles your money directly. All payments go through your Stripe account to your bank. Our 5% commission is tracked separately.
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← Back</button>
+      <button class="btn-skip" onclick="skipStep()">Skip — I'll do this later</button>
+      <button class="btn-next" onclick="nextStep()">Next: Go Live! →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: GO LIVE ── -->
+  <div class="step-panel" id="step4">
+    <div class="completion-card">
+      <div class="completion-icon">🎉</div>
+      <h2>Your Store Is Ready.</h2>
+      <p>You just built something. That alone puts you ahead of 90% of people who say they're going to do it someday. Your store is live. Now go get your first sale.</p>
+
+      <ul class="checklist" id="completionChecklist">
+        <li>Store name set</li>
+        <li>Branding configured</li>
+        <li>First product ready</li>
+        <li>14-day free trial active</li>
+      </ul>
+
+      <div class="completion-links">
+        <a href="index.html" class="comp-link primary">🏪 View My Store →</a>
+        <a href="admin.html" class="comp-link">📊 Go to Dashboard</a>
+        <a href="editor.html" class="comp-link">🎨 Design Templates</a>
+        <a href="landing.html" class="comp-link">🌐 Share My Link</a>
+      </div>
+
+      <p style="margin-top:24px;font-size:0.78rem;opacity:0.7">Need help? Email <a href="mailto:robertg@xlr8pressurewashing.com" style="color:#FFB74D">robertg@xlr8pressurewashing.com</a></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  var currentStep = 0;
+  var totalSteps  = 5;
+  var storeData   = {};
+
+  // Pre-fill from signup if available
+  var user = {};
+  try { user = JSON.parse(localStorage.getItem('bp2p_current_user') || '{}'); } catch(e) {}
+
+  function goToStep(n) {
+    if (n > currentStep) return; // can't skip forward past validated steps
+    currentStep = n;
+    updateUI();
+  }
+
+  function nextStep() {
+    if (!validateCurrentStep()) return;
+    collectStepData();
+    if (currentStep < totalSteps - 1) {
+      currentStep++;
+      updateUI();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 0) { currentStep--; updateUI(); window.scrollTo(0, 0); }
+  }
+
+  function skipStep() {
+    currentStep++;
+    updateUI();
+    window.scrollTo(0, 0);
+  }
+
+  function validateCurrentStep() {
+    if (currentStep === 0) {
+      var name = document.getElementById('storeName').value.trim();
+      if (!name) { toast('Please enter a store name to continue.'); return false; }
+    }
+    if (currentStep === 2) {
+      var title = document.getElementById('p1Title').value.trim();
+      var price = document.getElementById('p1Price').value;
+      if (title && (!price || parseFloat(price) < 0.99)) { toast('Enter a valid price ($0.99 minimum) for your product.'); return false; }
+    }
+    return true;
+  }
+
+  function collectStepData() {
+    if (currentStep === 0) {
+      storeData.name    = document.getElementById('storeName').value.trim();
+      storeData.tagline = document.getElementById('storeTagline').value.trim();
+    }
+    if (currentStep === 1) {
+      var sel = document.querySelector('.color-opt.selected');
+      storeData.color   = sel ? sel.getAttribute('data-color') : '#0D47A1';
+      storeData.audience = document.getElementById('audience').value.trim();
+      var types = [];
+      document.querySelectorAll('.product-type-opt.selected').forEach(function(el){ types.push(el.getAttribute('data-type')); });
+      storeData.productTypes = types;
+    }
+    if (currentStep === 2) {
+      storeData.firstProduct = {
+        title:    document.getElementById('p1Title').value.trim(),
+        category: document.getElementById('p1Category').value,
+        price:    parseFloat(document.getElementById('p1Price').value) || 0,
+        desc:     document.getElementById('p1Desc').value.trim(),
+        download: document.getElementById('p1Download').value.trim()
+      };
+    }
+    if (currentStep === 3) {
+      storeData.stripeLink = document.getElementById('stripeLink').value.trim();
+    }
+    // Save everything to localStorage
+    try { localStorage.setItem('bp2p_store_data', JSON.stringify(storeData)); } catch(e) {}
+    // Also apply to products if first product filled
+    if (currentStep === 3 && storeData.firstProduct && storeData.firstProduct.title) {
+      var products = JSON.parse(localStorage.getItem('bp2p_products') || '[]');
+      var fp = storeData.firstProduct;
+      var exists = products.find(function(p){ return p.title === fp.title; });
+      if (!exists) {
+        var catLabels = {ebook:'E-Book',course:'Course',templates:'Templates',membership:'Membership'};
+        products.unshift({
+          id: Date.now(), title: fp.title, category: fp.category,
+          categoryLabel: catLabels[fp.category] || 'E-Book',
+          price: fp.price, originalPrice: null, emoji: '📦',
+          desc: fp.desc, longDesc: fp.desc, features: [],
+          stripeLink: storeData.stripeLink || '', downloadUrl: fp.download,
+          bgClass: '', badge: 'new', badgeLabel: 'New', rating: 5.0, reviews: 0
+        });
+        try { localStorage.setItem('bp2p_products', JSON.stringify(products)); } catch(e) {}
+      }
+    }
+  }
+
+  function updateUI() {
+    // Show/hide panels
+    document.querySelectorAll('.step-panel').forEach(function(p, i){
+      p.classList.toggle('active', i === currentStep);
+    });
+    // Update dots
+    for (var i=0; i<totalSteps; i++) {
+      var dot = document.getElementById('dot'+i);
+      var lbl = document.getElementById('lbl'+i);
+      dot.className = 'dot' + (i < currentStep ? ' done' : i===currentStep ? ' active' : '');
+      dot.textContent = i < currentStep ? '✓' : (i+1);
+      lbl.className = 'step-label' + (i < currentStep ? ' done' : i===currentStep ? ' active' : '');
+    }
+    // Progress bar
+    var pct = Math.round(((currentStep+1)/totalSteps)*100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('stepCount').textContent = 'Step '+(currentStep+1)+' of '+totalSteps;
+  }
+
+  // ── LIVE PREVIEW ──
+  function updatePreview() {
+    var name    = document.getElementById('storeName').value || 'Your Store Name';
+    var tagline = document.getElementById('storeTagline').value || 'Your tagline appears here';
+    var slug    = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'your-store';
+    document.getElementById('previewName').textContent    = name;
+    document.getElementById('previewTagline').textContent = tagline;
+    document.getElementById('previewUrl').textContent     = 'p2pebookempire.com/store/' + slug;
+    document.getElementById('urlPreview').textContent     = slug;
+  }
+
+  function selectColor(el) {
+    document.querySelectorAll('.color-opt').forEach(function(c){c.classList.remove('selected');});
+    el.classList.add('selected');
+  }
+
+  function toggleType(el) {
+    el.classList.toggle('selected');
+  }
+
+  // ── TOAST ──
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+
+  // Init
+  updateUI();
+</script>
+</body>
+</html>

@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P2P ebook empire — Digital Products Store</title>
+  <meta name="description" content="Premium digital products to help you rebuild, grow, and rise. E-books, courses, templates and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand:       #0D47A1;
+      --brand-light: #1565C0;
+      --brand-dark:  #0A2E6E;
+      --accent:      #FF6F00;
+      --accent-light:#FF8F00;
+      --bg:          #F8F9FF;
+      --surface:     #FFFFFF;
+      --border:      #E0E7FF;
+      --text:        #0F172A;
+      --muted:       #64748B;
+      --success:     #16A34A;
+      --radius:      12px;
+      --shadow:      0 4px 24px rgba(13,71,161,0.10);
+      --shadow-lg:   0 12px 40px rgba(13,71,161,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(13,71,161,0.07);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--brand);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--brand); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cart-btn {
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .cart-btn:hover { background: var(--brand-light); }
+    .cart-count {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--brand);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 60%, #1976D2 100%);
+      color: #fff;
+      padding: 80px 24px 70px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      top: -200px; right: -150px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: rgba(255,111,0,0.12);
+      bottom: -150px; left: -100px;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,111,0,0.25);
+      color: #FFB74D;
+      border: 1px solid rgba(255,183,77,0.4);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .hero h1 span { color: #FFB74D; }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.88;
+      margin-bottom: 36px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 4px 18px rgba(255,111,0,0.35);
+    }
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 10px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat strong { display: block; font-size: 1.8rem; font-weight: 800; color: #FFB74D; }
+    .hero-stat span { font-size: 0.82rem; opacity: 0.75; }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+    }
+    .trust-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .trust-icon { font-size: 1rem; }
+
+    /* ── SECTION ── */
+    section { padding: 64px 24px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 10px;
+    }
+    .section-header h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .section-header p { color: var(--muted); max-width: 500px; margin: 0 auto; }
+
+    /* ── CATEGORY TABS ── */
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .cat-tab {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .cat-tab.active, .cat-tab:hover {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .product-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 1;
+    }
+    .product-badge.new { background: var(--success); }
+    .product-badge.free { background: #7C3AED; }
+    .product-img {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .product-img.course-bg { background: linear-gradient(135deg, #7C3AED 0%, #9D53F0 100%); }
+    .product-img.template-bg { background: linear-gradient(135deg, #0D7063 0%, #15A98F 100%); }
+    .product-img.member-bg { background: linear-gradient(135deg, #C2410C 0%, #EA580C 100%); }
+    .product-body { padding: 18px 20px 20px; }
+    .product-category {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .product-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .product-desc {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .product-price { font-size: 1.3rem; font-weight: 800; color: var(--brand-dark); }
+    .product-price s { font-size: 0.85rem; color: var(--muted); font-weight: 400; margin-right: 4px; }
+    .btn-add {
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-add:hover { background: var(--brand-light); transform: scale(1.03); }
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .stars { color: #F59E0B; }
+
+    /* ── FEATURED SECTION ── */
+    .featured-section { background: linear-gradient(135deg, #F0F4FF 0%, #EEF2FF 100%); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-section { background: var(--surface); }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .testimonial-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .t-stars { color: #F59E0B; font-size: 0.9rem; margin-bottom: 12px; }
+    .t-quote { font-size: 0.9rem; color: var(--text); line-height: 1.6; margin-bottom: 16px; font-style: italic; }
+    .t-author { display: flex; align-items: center; gap: 10px; }
+    .t-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 0.9rem;
+    }
+    .t-name { font-weight: 700; font-size: 0.88rem; }
+    .t-role { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--bg); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+    }
+    .step-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .step-num {
+      width: 48px; height: 48px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800;
+      margin: 0 auto 16px;
+    }
+    .step-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .step-card p { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── CART SIDEBAR ── */
+    .cart-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+    }
+    .cart-overlay.open { display: block; }
+    .cart-sidebar {
+      position: fixed;
+      right: -420px;
+      top: 0;
+      bottom: 0;
+      width: 400px;
+      max-width: 100vw;
+      background: var(--surface);
+      z-index: 201;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-sidebar.open { right: 0; }
+    .cart-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-header h3 { font-size: 1.1rem; font-weight: 700; }
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .close-cart:hover { color: var(--text); }
+    .cart-items { flex: 1; overflow-y: auto; padding: 20px 24px; }
+    .cart-empty {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--muted);
+    }
+    .cart-empty span { display: block; font-size: 2.5rem; margin-bottom: 12px; }
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .ci-icon {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .ci-info { flex: 1; min-width: 0; }
+    .ci-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ci-price { font-size: 0.85rem; font-weight: 700; color: var(--brand); }
+    .ci-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+    .ci-remove:hover { color: #EF4444; }
+    .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .btn-checkout {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-checkout:hover { background: var(--accent-light); }
+    .checkout-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-header {
+      padding: 24px 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .modal-body { padding: 20px 28px 28px; }
+    .modal-img {
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    .modal-category { font-size: 0.75rem; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .modal-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; line-height: 1.3; }
+    .modal-price-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .modal-price { font-size: 1.8rem; font-weight: 800; color: var(--brand-dark); }
+    .modal-price s { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .modal-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+    .modal-features { list-style: none; margin-bottom: 24px; }
+    .modal-features li {
+      font-size: 0.88rem;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-features li::before { content: '✓'; color: var(--success); font-weight: 700; }
+    .btn-modal-add {
+      width: 100%;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-modal-add:hover { background: var(--brand-light); }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    /* ── NEWSLETTER ── */
+    .newsletter-section {
+      background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+      color: #fff;
+    }
+    .newsletter-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .newsletter-inner h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
+    .newsletter-inner p { opacity: 0.85; margin-bottom: 28px; }
+    .newsletter-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; }
+    .newsletter-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 13px 16px;
+      border-radius: 9px;
+      border: none;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .newsletter-form button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 13px 22px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .newsletter-form button:hover { background: var(--accent-light); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--brand-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 48px 24px 28px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-brand .logo { color: #fff; font-size: 1.4rem; margin-bottom: 12px; display: block; }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.7; }
+    .footer-col h4 { color: #fff; font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+    .footer-powered { font-size: 0.78rem; opacity: 0.55; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--success);
+      color: #fff;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.35s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.mobile-open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 68px; left: 0; right: 0;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+        gap: 14px;
+        z-index: 99;
+      }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .hero h1 { font-size: 1.9rem; }
+      .hero-stats { gap: 24px; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .cart-sidebar { width: 100vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">Bridge<span>P2P</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#ebooks">E-Books</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="admin.html">Admin ↗</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Cart
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🔥 Premium Digital Products</div>
+    <h1>Your Bridge From <span>Where You Are</span><br>To Where You're Going</h1>
+    <p>Real knowledge. Practical tools. Built for people who are serious about building a better life — no fluff, no excuses.</p>
+    <div class="hero-ctas">
+      <a href="#products" class="btn-primary">Browse Products</a>
+      <a href="#courses" class="btn-outline">View Courses</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>500+</strong><span>Products Sold</span></div>
+      <div class="hero-stat"><strong>100%</strong><span>Digital Delivery</span></div>
+      <div class="hero-stat"><strong>4.9★</strong><span>Avg. Rating</span></div>
+      <div class="hero-stat"><strong>$0</strong><span>Monthly Fees</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span class="trust-icon">🔒</span> Secure Checkout via Stripe</div>
+    <div class="trust-item"><span class="trust-icon">⚡</span> Instant Digital Delivery</div>
+    <div class="trust-item"><span class="trust-icon">💯</span> 30-Day Satisfaction Guarantee</div>
+    <div class="trust-item"><span class="trust-icon">📱</span> Works on Any Device</div>
+    <div class="trust-item"><span class="trust-icon">🔄</span> Lifetime Access</div>
+  </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+<section class="featured-section" id="products">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">Our Catalog</div>
+      <h2>Digital Products Built to Move You Forward</h2>
+      <p>Everything you need to shift your mindset, build discipline, and create real income.</p>
+    </div>
+
+    <div class="category-tabs">
+      <button class="cat-tab active" onclick="filterProducts('all', this)">All Products</button>
+      <button class="cat-tab" onclick="filterProducts('ebook', this)">E-Books</button>
+      <button class="cat-tab" onclick="filterProducts('course', this)">Courses</button>
+      <button class="cat-tab" onclick="filterProducts('template', this)">Templates</button>
+      <button class="cat-tab" onclick="filterProducts('membership', this)">Memberships</button>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Products rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">Simple Process</div>
+      <h2>Buy. Download. Apply. Transform.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Browse the Store</h3>
+        <p>Find the product that matches where you are right now and where you want to go.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Secure Checkout</h3>
+        <p>Pay safely through Stripe with your card, Apple Pay, or Google Pay.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Instant Delivery</h3>
+        <p>Get immediate access to your download link — straight to your email.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Put It to Work</h3>
+        <p>Apply the knowledge, build the systems, and watch your life shift.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">Social Proof</div>
+      <h2>What People Are Saying</h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"This e-book literally changed how I think about money and business. I read it in one night and started applying it the next morning. No fluff — just real steps."</p>
+        <div class="t-author">
+          <div class="t-avatar">DM</div>
+          <div><div class="t-name">D. Marshall</div><div class="t-role">First-time entrepreneur</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The re-entry guide walked me through every step I was scared to figure out on my own. Practical, direct, and actually doable. Worth 10x the price."</p>
+        <div class="t-author">
+          <div class="t-avatar">TR</div>
+          <div><div class="t-name">T. Robinson</div><div class="t-role">Re-entry client</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The business template bundle saved me weeks of work. I had my LLC plan and pitch deck done in a weekend. Incredible value for the price."</p>
+        <div class="t-author">
+          <div class="t-avatar">KW</div>
+          <div><div class="t-name">K. Washington</div><div class="t-role">Small business owner</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="section-inner">
+    <div class="newsletter-inner">
+      <h2>Get New Products First</h2>
+      <p>Join the list and be the first to know when new e-books, courses, and tools drop. No spam. Ever.</p>
+      <form class="newsletter-form" onsubmit="subscribeEmail(event)">
+        <input type="email" placeholder="Your email address" required id="emailInput" />
+        <button type="submit">Subscribe →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">Bridge<span style="color:var(--accent)">P2P</span></a>
+        <p>Premium digital products designed to help you build knowledge, discipline, and real income — no matter where you're starting from.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#">E-Books</a></li>
+          <li><a href="#">Courses</a></li>
+          <li><a href="#">Templates</a></li>
+          <li><a href="#">Memberships</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Affiliate Program</a></li>
+          <li><a href="admin.html">Admin Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 BridgeP2P. All rights reserved.</span>
+      <span class="footer-powered">Powered by BridgeP2P · Payments by Stripe</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <span>🛒</span>
+      <p>Your cart is empty</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+    <button class="btn-checkout" onclick="goToCheckout()">Checkout with Stripe →</button>
+    <p class="checkout-note">🔒 Secure payment · Instant delivery · Stripe protected</p>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="productModal">
+    <div class="modal-header">
+      <div></div>
+      <button class="close-modal" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Added to cart!</div>
+
+<script>
+  // ── PRODUCT DATA ──────────────────────────────────────────────
+  // To add your real products: edit this array, or manage via admin.html
+  // stripeLink: paste your Stripe Payment Link URL here for each product
+
+  const PRODUCTS = [
+    {
+      id: 1,
+      title: "From Locked Down to Leveled Up",
+      category: "ebook",
+      categoryLabel: "E-Book",
+      desc: "The complete re-entry roadmap: housing, income, credit, identity, and mindset — all in one guide built for real people.",
+      longDesc: "This is not a feel-good pamphlet. This is a step-by-step playbook for navigating life after incarceration with clarity and strategy. Covers: rebuilding credit, finding housing, landing income, dealing with family dynamics, and making the mental shift from survival mode to builder mode.",
+      price: 19.97,
+      originalPrice: 34.99,
+      emoji: "📗",
+      bgClass: "",
+      badge: "bestseller",
+      badgeLabel: "Best Seller",
+      rating: 4.9,
+      reviews: 47,
+      features: ["87 pages of actionable content", "Housing checklist & resource guide", "Credit repair starter steps", "Income-building roadmap", "Mindset shift framework"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    },
+    {
+      id: 2,
+      title: "The Discipline Code",
+      category: "ebook",
+      categoryLabel: "E-Book",
+      desc: "Break bad habits, build new systems, and become the person you keep saying you're going to be.",
+      longDesc: "Discipline isn't motivation — it's infrastructure. This e-book teaches you how to build daily systems that run on autopilot even when your feelings don't cooperate. Covers: habit architecture, morning routines that actually work, eliminating triggers, and creating accountability structures.",
+      price: 14.97,
+      originalPrice: null,
+      emoji: "🔒",
+      bgClass: "",
+      badge: "new",
+      badgeLabel: "New",
+      rating: 4.8,
+      reviews: 19,
+      features: ["72 pages", "Daily discipline tracker (printable)", "Habit stack builder", "Trigger identification worksheet", "30-day implementation plan"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    },
+    {
+      id: 3,
+      title: "Debt Free Blueprint",
+      category: "ebook",
+      categoryLabel: "E-Book",
+      desc: "Understand your debt, attack it strategically, and build the financial foundation you never had.",
+      longDesc: "Debt isn't a character flaw — it's a system problem. This guide shows you how to audit your debt, prioritize payoffs, negotiate balances, dispute errors, and shift your financial identity from debtor to builder.",
+      price: 17.97,
+      originalPrice: 29.99,
+      emoji: "💸",
+      bgClass: "",
+      badge: null,
+      rating: 4.9,
+      reviews: 33,
+      features: ["Debt snowball & avalanche explained", "Dispute letter templates included", "Budget foundation framework", "Credit score improvement guide", "Negotiation scripts for collectors"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    },
+    {
+      id: 4,
+      title: "From Employee to Entrepreneur",
+      category: "course",
+      categoryLabel: "Course",
+      desc: "The complete mindset and mechanics shift from working for someone else to building something of your own.",
+      longDesc: "This isn't about quitting your job tomorrow. It's about developing the thinking, strategy, and skills to build income on your terms. Covers business idea validation, LLC basics, first dollar strategies, pricing, and how to stop thinking like an employee.",
+      price: 47.00,
+      originalPrice: 97.00,
+      emoji: "🚀",
+      bgClass: "course-bg",
+      badge: "bestseller",
+      badgeLabel: "🔥 Hot",
+      rating: 5.0,
+      reviews: 28,
+      features: ["6 video modules", "Business idea validation framework", "LLC setup walkthrough", "Pricing psychology guide", "First $1,000 roadmap", "Private community access"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    },
+    {
+      id: 5,
+      title: "Business Launch Toolkit",
+      category: "template",
+      categoryLabel: "Templates",
+      desc: "Every template you need to launch a real business: business plan, pitch deck, invoice, contracts, and more.",
+      longDesc: "Stop starting from scratch. This toolkit gives you 15 professionally designed, editable templates that cover every phase of launching a small business — from idea to first client.",
+      price: 27.00,
+      originalPrice: 49.00,
+      emoji: "🛠️",
+      bgClass: "template-bg",
+      badge: "new",
+      badgeLabel: "New",
+      rating: 4.8,
+      reviews: 14,
+      features: ["Business plan template (Word/Google Doc)", "1-page pitch deck (PowerPoint)", "Client invoice template", "Service agreement template", "Social media content calendar", "90-day launch checklist"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    },
+    {
+      id: 6,
+      title: "BridgeP2P Inner Circle",
+      category: "membership",
+      categoryLabel: "Membership",
+      desc: "Monthly access to all new releases, live coaching calls, and a private community of builders.",
+      longDesc: "Every month you get: 1–2 new e-books or resources, access to a live Q&A/coaching call, a private community of people in your same position working toward the same goals, and early access to new courses.",
+      price: 19.97,
+      originalPrice: null,
+      emoji: "👑",
+      bgClass: "member-bg",
+      badge: null,
+      rating: 4.9,
+      reviews: 22,
+      features: ["1–2 new e-books monthly", "Live monthly coaching call", "Private community access", "Early product access", "Exclusive discounts on all products", "Cancel anytime"],
+      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
+    }
+  ];
+
+  // ── CART STATE ─────────────────────────────────────────────────
+  let cart = JSON.parse(localStorage.getItem('bp2p_cart') || '[]');
+
+  function saveCart() { localStorage.setItem('bp2p_cart', JSON.stringify(cart)); }
+
+  function addToCart(productId) {
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (!product) return;
+    const existing = cart.find(i => i.id === productId);
+    if (!existing) { cart.push({ id: product.id, title: product.title, price: product.price, emoji: product.emoji, stripeLink: product.stripeLink }); }
+    saveCart();
+    updateCartUI();
+    showToast(`✓ "${product.title}" added to cart`);
+    closeModal();
+  }
+
+  function removeFromCart(productId) {
+    cart = cart.filter(i => i.id !== productId);
+    saveCart();
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const count = cart.length;
+    document.getElementById('cartCount').textContent = count;
+    const itemsEl = document.getElementById('cartItems');
+    const emptyEl = document.getElementById('cartEmpty');
+    const total = cart.reduce((s, i) => s + i.price, 0);
+    document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+
+    if (count === 0) {
+      emptyEl.style.display = 'block';
+      // remove any rendered items
+      itemsEl.querySelectorAll('.cart-item').forEach(e => e.remove());
+      return;
+    }
+    emptyEl.style.display = 'none';
+    itemsEl.querySelectorAll('.cart-item').forEach(e => e.remove());
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div class="ci-icon">${item.emoji}</div>
+        <div class="ci-info">
+          <div class="ci-title">${item.title}</div>
+          <div class="ci-price">$${item.price.toFixed(2)}</div>
+        </div>
+        <button class="ci-remove" onclick="removeFromCart(${item.id})">✕</button>
+      `;
+      itemsEl.appendChild(div);
+    });
+  }
+
+  function toggleCart() {
+    document.getElementById('cartOverlay').classList.toggle('open');
+    document.getElementById('cartSidebar').classList.toggle('open');
+  }
+
+  function goToCheckout() {
+    if (cart.length === 0) { showToast('Your cart is empty!'); return; }
+    // Single item: go directly to that product's Stripe link
+    if (cart.length === 1 && cart[0].stripeLink && !cart[0].stripeLink.includes('YOUR_LINK_HERE')) {
+      window.open(cart[0].stripeLink, '_blank');
+    } else {
+      // Multi-item: redirect to checkout page
+      window.location.href = 'checkout.html';
+    }
+  }
+
+  // ── PRODUCT RENDERING ──────────────────────────────────────────
+  function renderProducts(filter = 'all') {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+    filtered.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.onclick = () => openModal(p.id);
+      const badgeHTML = p.badge ? `<div class="product-badge ${p.badge === 'new' ? 'new' : ''}">${p.badgeLabel}</div>` : '';
+      const origHTML = p.originalPrice ? `<s>$${p.originalPrice.toFixed(2)}</s>` : '';
+      const ratingHTML = `<div class="product-rating"><span class="stars">★★★★★</span> ${p.rating} (${p.reviews})</div>`;
+      card.innerHTML = `
+        ${badgeHTML}
+        <div class="product-img ${p.bgClass}">${p.emoji}</div>
+        <div class="product-body">
+          <div class="product-category">${p.categoryLabel}</div>
+          <div class="product-title">${p.title}</div>
+          ${ratingHTML}
+          <div class="product-desc">${p.desc}</div>
+          <div class="product-footer">
+            <div class="product-price">${origHTML}$${p.price.toFixed(2)}</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">Add to Cart</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterProducts(cat, btn) {
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(cat);
+  }
+
+  // ── MODAL ──────────────────────────────────────────────────────
+  function openModal(productId) {
+    const p = PRODUCTS.find(x => x.id === productId);
+    if (!p) return;
+    const featuresHTML = p.features.map(f => `<li>${f}</li>`).join('');
+    const origHTML = p.originalPrice ? `<s>$${p.originalPrice.toFixed(2)}</s>` : '';
+    const monthlyNote = p.category === 'membership' ? ' <small style="font-size:0.7rem;color:var(--muted)">/month</small>' : '';
+    document.getElementById('modalBody').innerHTML = `
+      <div class="modal-img ${p.bgClass}">${p.emoji}</div>
+      <div class="modal-category">${p.categoryLabel}</div>
+      <div class="modal-title">${p.title}</div>
+      <div class="modal-price-row">
+        <div class="modal-price">${origHTML} $${p.price.toFixed(2)}${monthlyNote}</div>
+      </div>
+      <div class="modal-desc">${p.longDesc}</div>
+      <ul class="modal-features">${featuresHTML}</ul>
+      <button class="btn-modal-add" onclick="addToCart(${p.id})">🛒 Add to Cart — $${p.price.toFixed(2)}</button>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+  // ── TOAST ──────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── NEWSLETTER ─────────────────────────────────────────────────
+  function subscribeEmail(e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value;
+    showToast(`✓ You're subscribed! Welcome to BridgeP2P.`);
+    document.getElementById('emailInput').value = '';
+    // TODO: integrate with your email provider (Mailchimp, ConvertKit, etc.)
+    console.log('New subscriber:', email);
+  }
+
+  // ── MOBILE NAV ─────────────────────────────────────────────────
+  function toggleMobileNav() {
+    document.getElementById('navLinks').classList.toggle('mobile-open');
+  }
+
+  // ── INIT ───────────────────────────────────────────────────────
+  renderProducts();
+  updateCartUI();
+</script>
+</body>
+</html>

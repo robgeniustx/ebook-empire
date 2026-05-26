@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "p2p-ebook-empire",
+    "Ebook_Empire": "p2p-ebook-empire"
+  },
+  "targets": {},
+  "etags": {}
+}

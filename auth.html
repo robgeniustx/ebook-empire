@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — P2P ebook empire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    :root{--brand:#0D47A1;--brand-light:#1565C0;--brand-dark:#0A2E6E;--accent:#FF6F00;--bg:#F8F9FF;--surface:#FFFFFF;--border:#E0E7FF;--text:#0F172A;--muted:#64748B;--success:#16A34A;--danger:#DC2626}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:linear-gradient(145deg,var(--brand-dark) 0%,var(--brand) 60%,#1976D2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .auth-card{background:var(--surface);border-radius:20px;padding:44px 40px;max-width:460px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.28)}
+    .auth-logo{font-size:1.6rem;font-weight:900;color:var(--brand);margin-bottom:4px;text-align:center}
+    .auth-logo span{color:var(--accent)}
+    .auth-tagline{font-size:0.75rem;color:var(--muted);text-align:center;margin-bottom:28px;letter-spacing:0.3px}
+    .auth-tabs{display:flex;border-radius:10px;overflow:hidden;background:var(--bg);padding:4px;gap:4px;margin-bottom:28px}
+    .auth-tab{flex:1;padding:9px;text-align:center;font-size:0.88rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all 0.2s;color:var(--muted)}
+    .auth-tab.active{background:var(--surface);color:var(--brand);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;color:var(--text)}
+    .form-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:0.95rem;outline:none;transition:border-color 0.2s;font-family:inherit;color:var(--text)}
+    .form-input:focus{border-color:var(--brand)}
+    .form-error{font-size:0.78rem;color:var(--danger);margin-top:5px;display:none}
+    .btn-submit{width:100%;background:var(--brand);color:#fff;border:none;border-radius:10px;padding:14px;font-size:1rem;font-weight:800;cursor:pointer;transition:background 0.2s;margin-top:4px}
+    .btn-submit:hover{background:var(--brand-light)}
+    .btn-submit:disabled{background:var(--muted);cursor:not-allowed}
+    .divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:0.78rem}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .btn-google{width:100%;border:1.5px solid var(--border);background:var(--surface);border-radius:10px;padding:12px;font-size:0.92rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color 0.2s;font-family:inherit;color:var(--text)}
+    .btn-google:hover{border-color:var(--brand);background:var(--bg)}
+    .auth-footer{text-align:center;font-size:0.8rem;color:var(--muted);margin-top:18px}
+    .auth-footer a{color:var(--brand);font-weight:600;text-decoration:none}
+    .reset-link{display:block;text-align:right;font-size:0.78rem;color:var(--brand);font-weight:600;cursor:pointer;margin-top:-8px;margin-bottom:14px}
+    .reset-link:hover{text-decoration:underline}
+    .success-banner{display:none;background:#DCFCE7;border:1px solid #86EFAC;border-radius:9px;padding:12px 16px;font-size:0.85rem;color:var(--success);margin-bottom:16px;font-weight:600}
+    .loading-overlay{display:none;position:fixed;inset:0;background:rgba(10,46,110,0.6);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+    .loading-overlay.show{display:flex}
+    .spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{color:#fff;font-weight:700;font-size:0.9rem}
+    .pw-strength{height:4px;border-radius:2px;margin-top:6px;transition:all 0.3s;background:var(--border)}
+    .pw-strength.weak{background:#EF4444;width:33%}
+    .pw-strength.medium{background:#F59E0B;width:66%}
+    .pw-strength.strong{background:var(--success);width:100%}
+    .pw-hint{font-size:0.72rem;color:var(--muted);margin-top:4px}
+    .terms-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+    .terms-row input{margin-top:3px;accent-color:var(--brand);flex-shrink:0}
+    .terms-row label{font-size:0.78rem;color:var(--muted);line-height:1.5}
+    .terms-row a{color:var(--brand);font-weight:600}
+    /* Toast */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0F172A;color:#fff;border-radius:10px;padding:13px 20px;font-weight:600;font-size:0.85rem;z-index:200;transition:transform 0.3s,opacity 0.3s;opacity:0;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Signing you in...</div>
+</div>
+
+<div class="auth-card">
+  <div class="auth-logo">Bridge<span>P2P</span></div>
+  <div class="auth-tagline">America's Bridge for People 2 Prosperity</div>
+
+  <div class="auth-tabs">
+    <div class="auth-tab active" id="tabLogin"  onclick="showTab('login')">Sign In</div>
+    <div class="auth-tab"        id="tabSignup" onclick="showTab('signup')">Create Account</div>
+  </div>
+
+  <div class="success-banner" id="successBanner"></div>
+
+  <!-- ── LOGIN FORM ── -->
+  <form id="loginForm" onsubmit="doLogin(event)">
+    <button type="button" class="btn-google" onclick="doGoogleAuth()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <div class="divider">or sign in with email</div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="loginEmail" type="email" placeholder="you@email.com" autocomplete="email" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" required />
+      <div class="form-error" id="loginError"></div>
+    </div>
+    <span class="reset-link" onclick="doPasswordReset()">Forgot your password?</span>
+    <button type="submit" class="btn-submit" id="loginBtn">Sign In →</button>
+  </form>
+
+  <!-- ── SIGNUP FORM ── -->
+  <form id="signupForm" style="display:none" onsubmit="doSignup(event)">
+    <button type="button" class="btn-google" onclick="doGoogleAuth()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Sign Up with Google
+    </button>
+    <div class="divider">or create with email</div>
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input class="form-input" id="signupName" type="text" placeholder="Robert Green" autocomplete="name" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" id="signupEmail" type="email" placeholder="you@email.com" autocomplete="email" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="signupPass" type="password" placeholder="Min. 8 characters" autocomplete="new-password" required oninput="checkPasswordStrength(this.value)" />
+      <div class="pw-strength" id="pwStrength"></div>
+      <div class="pw-hint" id="pwHint">Use 8+ characters with numbers and symbols for a strong password.</div>
+      <div class="form-error" id="signupError"></div>
+    </div>
+    <div class="terms-row">
+      <input type="checkbox" id="termsCheck" required />
+      <label for="termsCheck">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand my 14-day free trial starts now.</label>
+    </div>
+    <button type="submit" class="btn-submit" id="signupBtn">Create My Account — Free →</button>
+  </form>
+
+  <div class="auth-footer">
+    <span id="footerText">Don't have an account? <a href="#" onclick="showTab('signup')">Sign up free →</a></span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── FIREBASE CONFIG ────────────────────────────────────────
+  // Replace these values with your Firebase project credentials
+  // Get them at: console.firebase.google.com → Project Settings → General → Your apps
+  var firebaseConfig = {
+    apiKey:            "AIzaSyBfWhx4Bvxjx3kFECDbBQtfM1RoVqQ8qfA",
+    authDomain:        "p2p-ebook-empire.firebaseapp.com",
+    projectId:         "p2p-ebook-empire",
+    storageBucket:     "p2p-ebook-empire.firebasestorage.app",
+    messagingSenderId: "570621574553",
+    appId:             "1:570621574553:web:8f4693194ce36a541aa708",
+    measurementId:     "G-V6NEP2HN2R"
+  };
+
+  // reCAPTCHA site key for auth flows
+  var RECAPTCHA_SITE_KEY = "6LdvYPwsAAAAADv2e3M0m7CbZkbBET5pWoKFLRkh";
+
+  var FIREBASE_CONFIGURED = firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY";
+
+  var auth, db, googleProvider;
+  if (FIREBASE_CONFIGURED) {
+    firebase.initializeApp(firebaseConfig);
+    auth           = firebase.auth();
+    db             = firebase.firestore();
+    googleProvider = new firebase.auth.GoogleAuthProvider();
+    // Check if already logged in
+    auth.onAuthStateChanged(function(user) {
+      if (user) { redirectToDashboard(user); }
+    });
+  } else {
+    showFallbackNotice();
+  }
+
+  function showFallbackNotice() {
+    var banner = document.getElementById('successBanner');
+    banner.style.display = 'block';
+    banner.style.background = '#FEF3C7';
+    banner.style.borderColor = '#FDE68A';
+    banner.style.color = '#92400E';
+    banner.textContent = '⚙️ Firebase not connected yet. Set up your free Firebase project and paste your config into auth.html — see DEPLOY.md for steps.';
+  }
+
+  // ── TABS ───────────────────────────────────────────────────
+  function showTab(tab) {
+    document.getElementById('loginForm').style.display  = tab==='login'  ? 'block' : 'none';
+    document.getElementById('signupForm').style.display = tab==='signup' ? 'block' : 'none';
+    document.getElementById('tabLogin').classList.toggle('active',  tab==='login');
+    document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
+    document.getElementById('footerText').innerHTML = tab==='login'
+      ? 'Don\'t have an account? <a href="#" onclick="showTab(\'signup\')">Sign up free →</a>'
+      : 'Already have an account? <a href="#" onclick="showTab(\'login\')">Sign in →</a>';
+    document.getElementById('successBanner').style.display = 'none';
+  }
+
+  // Pre-fill email if coming from landing page
+  window.addEventListener('DOMContentLoaded', function() {
+    var preEmail = localStorage.getItem('bp2p_signup_email');
+    var preName  = localStorage.getItem('bp2p_signup_name');
+    if (preEmail) {
+      document.getElementById('signupEmail').value = preEmail;
+      document.getElementById('loginEmail').value  = preEmail;
+      if (preName)  document.getElementById('signupName').value = preName;
+      showTab('signup');
+    }
+  });
+
+  // ── LOGIN ──────────────────────────────────────────────────
+  function doLogin(e) {
+    e.preventDefault();
+    var email = document.getElementById('loginEmail').value.trim();
+    var pass  = document.getElementById('loginPass').value;
+    if (!FIREBASE_CONFIGURED) { demoLogin(email); return; }
+    showLoading('Signing you in...');
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(function(result) { redirectToDashboard(result.user); })
+      .catch(function(err) {
+        hideLoading();
+        showFormError('loginError', friendlyError(err.code));
+      });
+  }
+
+  // ── SIGNUP ─────────────────────────────────────────────────
+  function doSignup(e) {
+    e.preventDefault();
+    var name  = document.getElementById('signupName').value.trim();
+    var email = document.getElementById('signupEmail').value.trim();
+    var pass  = document.getElementById('signupPass').value;
+    if (pass.length < 8) { showFormError('signupError', 'Password must be at least 8 characters.'); return; }
+    if (!document.getElementById('termsCheck').checked) { showFormError('signupError', 'Please accept the Terms of Service.'); return; }
+    if (!FIREBASE_CONFIGURED) { demoSignup(name, email); return; }
+    showLoading('Creating your account...');
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(function(result) {
+        return result.user.updateProfile({displayName: name}).then(function() {
+          return createUserProfile(result.user, name);
+        });
+      })
+      .then(function() {
+        localStorage.removeItem('bp2p_signup_email');
+        localStorage.removeItem('bp2p_signup_name');
+        window.location.href = 'onboarding.html';
+      })
+      .catch(function(err) {
+        hideLoading();
+        showFormError('signupError', friendlyError(err.code));
+      });
+  }
+
+  // ── GOOGLE AUTH ────────────────────────────────────────────
+  function doGoogleAuth() {
+    if (!FIREBASE_CONFIGURED) { toast('Connect Firebase first — see the banner above.'); return; }
+    showLoading('Connecting Google...');
+    auth.signInWithPopup(googleProvider)
+      .then(function(result) {
+        var isNew = result.additionalUserInfo && result.additionalUserInfo.isNewUser;
+        if (isNew) {
+          return createUserProfile(result.user, result.user.displayName).then(function() {
+            window.location.href = 'onboarding.html';
+          });
+        } else {
+          redirectToDashboard(result.user);
+        }
+      })
+      .catch(function(err) {
+        hideLoading();
+        toast(friendlyError(err.code));
+      });
+  }
+
+  // ── PASSWORD RESET ─────────────────────────────────────────
+  function doPasswordReset() {
+    var email = document.getElementById('loginEmail').value.trim();
+    if (!email) { showFormError('loginError', 'Enter your email above first.'); return; }
+    if (!FIREBASE_CONFIGURED) { toast('Connect Firebase to enable password reset.'); return; }
+    auth.sendPasswordResetEmail(email)
+      .then(function() { showSuccess('Password reset email sent! Check your inbox.'); })
+      .catch(function(err) { showFormError('loginError', friendlyError(err.code)); });
+  }
+
+  // ── USER PROFILE (Firestore) ───────────────────────────────
+  function createUserProfile(user, name) {
+    if (!db) return Promise.resolve();
+    return db.collection('users').doc(user.uid).set({
+      uid:         user.uid,
+      name:        name || user.displayName || '',
+      email:       user.email,
+      plan:        'trial',
+      trialStart:  new Date().toISOString(),
+      trialEnd:    new Date(Date.now() + 14*24*60*60*1000).toISOString(),
+      storeSetup:  false,
+      commission:  0.05,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+    }, {merge: true});
+  }
+
+  // ── DEMO MODE (no Firebase) ────────────────────────────────
+  function demoLogin(email) {
+    var users = JSON.parse(localStorage.getItem('bp2p_demo_users') || '{}');
+    if (users[email]) {
+      localStorage.setItem('bp2p_current_user', JSON.stringify(users[email]));
+      showLoading('Signing you in...');
+      setTimeout(function() { window.location.href = 'profile.html'; }, 800);
+    } else {
+      showFormError('loginError', 'No account found. Create one in the Sign Up tab.');
+    }
+  }
+
+  function demoSignup(name, email) {
+    var users = JSON.parse(localStorage.getItem('bp2p_demo_users') || '{}');
+    if (users[email]) { showFormError('signupError', 'Email already registered. Sign in instead.'); return; }
+    var user = {uid: 'demo_'+Date.now(), name: name, email: email, plan: 'trial', storeSetup: false, createdAt: new Date().toISOString()};
+    users[email] = user;
+    localStorage.setItem('bp2p_demo_users', JSON.stringify(users));
+    localStorage.setItem('bp2p_current_user', JSON.stringify(user));
+    localStorage.removeItem('bp2p_signup_email');
+    localStorage.removeItem('bp2p_signup_name');
+    showLoading('Setting up your account...');
+    setTimeout(function() { window.location.href = 'onboarding.html'; }, 900);
+  }
+
+  // ── REDIRECT AFTER LOGIN ───────────────────────────────────
+  function redirectToDashboard(user) {
+    if (!db) { window.location.href = 'profile.html'; return; }
+    db.collection('users').doc(user.uid).get().then(function(doc) {
+      if (doc.exists && doc.data().storeSetup) {
+        window.location.href = 'profile.html';
+      } else {
+        window.location.href = 'onboarding.html';
+      }
+    }).catch(function() { window.location.href = 'profile.html'; });
+  }
+
+  // ── HELPERS ────────────────────────────────────────────────
+  function friendlyError(code) {
+    var msgs = {
+      'auth/user-not-found':       'No account found with that email.',
+      'auth/wrong-password':       'Incorrect password. Try again.',
+      'auth/email-already-in-use': 'That email is already registered. Sign in instead.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password is too weak. Use 8+ characters.',
+      'auth/too-many-requests':    'Too many attempts. Wait a moment and try again.',
+      'auth/popup-closed-by-user': 'Google sign-in was cancelled.',
+      'auth/network-request-failed':'Network error. Check your connection.',
+    };
+    return msgs[code] || 'Something went wrong. Please try again.';
+  }
+
+  function showFormError(id, msg) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display = 'block'; el.textContent = msg; }
+  }
+
+  function showSuccess(msg) {
+    var b = document.getElementById('successBanner');
+    b.style.display = 'block';
+    b.style.background = '#DCFCE7';
+    b.style.borderColor = '#86EFAC';
+    b.style.color = '#166534';
+    b.textContent = msg;
+  }
+
+  function showLoading(msg) {
+    document.getElementById('loadingText').textContent = msg;
+    document.getElementById('loadingOverlay').classList.add('show');
+  }
+
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('show');
+  }
+
+  function checkPasswordStrength(pass) {
+    var bar  = document.getElementById('pwStrength');
+    var hint = document.getElementById('pwHint');
+    bar.className = 'pw-strength';
+    if (!pass) { hint.textContent = 'Use 8+ characters for a strong password.'; return; }
+    var score = 0;
+    if (pass.length >= 8)  score++;
+    if (pass.length >= 12) score++;
+    if (/[0-9]/.test(pass)) score++;
+    if (/[^A-Za-z0-9]/.test(pass)) score++;
+    if (score <= 1) { bar.classList.add('weak');   hint.textContent = 'Weak — add numbers and symbols'; }
+    else if (score <= 2) { bar.classList.add('medium'); hint.textContent = 'Getting there — add more variety'; }
+    else { bar.classList.add('strong'); hint.textContent = '✓ Strong password'; }
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3200);
+  }
+</script>
+</body>
+</html>
