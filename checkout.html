@@ -299,11 +299,20 @@
 
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/store.js"></script>
 <script>
   let cart = [];
   try { cart = JSON.parse(localStorage.getItem('bp2p_cart') || '[]'); } catch(e) {}
   let PRODUCTS = [];
-  try { PRODUCTS = JSON.parse(localStorage.getItem('bp2p_products') || '[]'); } catch(e) {}
+
+  async function loadCheckoutProducts() {
+    PRODUCTS = await BP2PStore.getProducts();
+    renderSummary();
+  }
 
   function renderSummary() {
     const itemsEl = document.getElementById('summaryItems');
@@ -365,7 +374,7 @@
     if (cart.length === 1) {
       const item = cart[0];
       if (!item.stripeLink || item.stripeLink.includes('YOUR_LINK_HERE')) {
-        alert('This product\'s payment link is not yet configured. Please contact robertg@xlr8pressurewashing.com to complete your purchase.');
+        alert('This product\'s payment link is not yet configured. Please contact support@p2pebookempire.com to complete your purchase.');
         return;
       }
       // Append prefill params to Stripe link if supported
@@ -389,7 +398,7 @@
     }
   }
 
-  renderSummary();
+  loadCheckoutProducts();
 </script>
 </body>
 </html>

@@ -729,7 +729,7 @@
 <!-- NAVIGATION -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">Bridge<span>P2P</span></a>
+    <a href="index.html" class="logo">Bridge<span>P2P</span></a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#products">Shop</a></li>
       <li><a href="#ebooks">E-Books</a></li>
@@ -796,6 +796,11 @@
       <button class="cat-tab" onclick="filterProducts('membership', this)">Memberships</button>
     </div>
 
+    <div id="ebooks" aria-hidden="true"></div>
+    <div id="courses" aria-hidden="true"></div>
+    <div id="templates" aria-hidden="true"></div>
+    <div id="memberships" aria-hidden="true"></div>
+
     <div class="product-grid" id="productGrid">
       <!-- Products rendered by JS -->
     </div>
@@ -803,7 +808,7 @@
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="how-section">
+<section class="how-section" id="about">
   <div class="section-inner">
     <div class="section-header">
       <div class="section-label">Simple Process</div>
@@ -889,37 +894,41 @@
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo">Bridge<span style="color:var(--accent)">P2P</span></a>
+        <a href="index.html" class="logo">Bridge<span style="color:var(--accent)">P2P</span></a>
         <p>Premium digital products designed to help you build knowledge, discipline, and real income — no matter where you're starting from.</p>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
         <ul>
-          <li><a href="#">E-Books</a></li>
-          <li><a href="#">Courses</a></li>
-          <li><a href="#">Templates</a></li>
-          <li><a href="#">Memberships</a></li>
+          <li><a href="#ebooks">E-Books</a></li>
+          <li><a href="#courses">Courses</a></li>
+          <li><a href="#templates">Templates</a></li>
+          <li><a href="#memberships">Memberships</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Affiliate Program</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="mailto:support@p2pebookempire.com">Contact</a></li>
+          <li><a href="#products">Affiliate Program</a></li>
           <li><a href="admin.html">Admin Login</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Refund Policy</a></li>
-          <li><a href="#">Disclaimer</a></li>
+          <li><a href="#privacy-policy">Privacy Policy</a></li>
+          <li><a href="#terms-of-service">Terms of Service</a></li>
+          <li><a href="#refund-policy">Refund Policy</a></li>
+          <li><a href="#disclaimer">Disclaimer</a></li>
         </ul>
       </div>
     </div>
+    <div id="privacy-policy" aria-hidden="true"></div>
+    <div id="terms-of-service" aria-hidden="true"></div>
+    <div id="refund-policy" aria-hidden="true"></div>
+    <div id="disclaimer" aria-hidden="true"></div>
     <div class="footer-bottom">
       <span>© 2025 BridgeP2P. All rights reserved.</span>
       <span class="footer-powered">Powered by BridgeP2P · Payments by Stripe</span>
@@ -964,123 +973,18 @@
 <!-- TOAST -->
 <div class="toast" id="toast">✓ Added to cart!</div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/store.js"></script>
 <script>
   // ── PRODUCT DATA ──────────────────────────────────────────────
-  // To add your real products: edit this array, or manage via admin.html
-  // stripeLink: paste your Stripe Payment Link URL here for each product
-
-  const PRODUCTS = [
-    {
-      id: 1,
-      title: "From Locked Down to Leveled Up",
-      category: "ebook",
-      categoryLabel: "E-Book",
-      desc: "The complete re-entry roadmap: housing, income, credit, identity, and mindset — all in one guide built for real people.",
-      longDesc: "This is not a feel-good pamphlet. This is a step-by-step playbook for navigating life after incarceration with clarity and strategy. Covers: rebuilding credit, finding housing, landing income, dealing with family dynamics, and making the mental shift from survival mode to builder mode.",
-      price: 19.97,
-      originalPrice: 34.99,
-      emoji: "📗",
-      bgClass: "",
-      badge: "bestseller",
-      badgeLabel: "Best Seller",
-      rating: 4.9,
-      reviews: 47,
-      features: ["87 pages of actionable content", "Housing checklist & resource guide", "Credit repair starter steps", "Income-building roadmap", "Mindset shift framework"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    },
-    {
-      id: 2,
-      title: "The Discipline Code",
-      category: "ebook",
-      categoryLabel: "E-Book",
-      desc: "Break bad habits, build new systems, and become the person you keep saying you're going to be.",
-      longDesc: "Discipline isn't motivation — it's infrastructure. This e-book teaches you how to build daily systems that run on autopilot even when your feelings don't cooperate. Covers: habit architecture, morning routines that actually work, eliminating triggers, and creating accountability structures.",
-      price: 14.97,
-      originalPrice: null,
-      emoji: "🔒",
-      bgClass: "",
-      badge: "new",
-      badgeLabel: "New",
-      rating: 4.8,
-      reviews: 19,
-      features: ["72 pages", "Daily discipline tracker (printable)", "Habit stack builder", "Trigger identification worksheet", "30-day implementation plan"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    },
-    {
-      id: 3,
-      title: "Debt Free Blueprint",
-      category: "ebook",
-      categoryLabel: "E-Book",
-      desc: "Understand your debt, attack it strategically, and build the financial foundation you never had.",
-      longDesc: "Debt isn't a character flaw — it's a system problem. This guide shows you how to audit your debt, prioritize payoffs, negotiate balances, dispute errors, and shift your financial identity from debtor to builder.",
-      price: 17.97,
-      originalPrice: 29.99,
-      emoji: "💸",
-      bgClass: "",
-      badge: null,
-      rating: 4.9,
-      reviews: 33,
-      features: ["Debt snowball & avalanche explained", "Dispute letter templates included", "Budget foundation framework", "Credit score improvement guide", "Negotiation scripts for collectors"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    },
-    {
-      id: 4,
-      title: "From Employee to Entrepreneur",
-      category: "course",
-      categoryLabel: "Course",
-      desc: "The complete mindset and mechanics shift from working for someone else to building something of your own.",
-      longDesc: "This isn't about quitting your job tomorrow. It's about developing the thinking, strategy, and skills to build income on your terms. Covers business idea validation, LLC basics, first dollar strategies, pricing, and how to stop thinking like an employee.",
-      price: 47.00,
-      originalPrice: 97.00,
-      emoji: "🚀",
-      bgClass: "course-bg",
-      badge: "bestseller",
-      badgeLabel: "🔥 Hot",
-      rating: 5.0,
-      reviews: 28,
-      features: ["6 video modules", "Business idea validation framework", "LLC setup walkthrough", "Pricing psychology guide", "First $1,000 roadmap", "Private community access"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    },
-    {
-      id: 5,
-      title: "Business Launch Toolkit",
-      category: "template",
-      categoryLabel: "Templates",
-      desc: "Every template you need to launch a real business: business plan, pitch deck, invoice, contracts, and more.",
-      longDesc: "Stop starting from scratch. This toolkit gives you 15 professionally designed, editable templates that cover every phase of launching a small business — from idea to first client.",
-      price: 27.00,
-      originalPrice: 49.00,
-      emoji: "🛠️",
-      bgClass: "template-bg",
-      badge: "new",
-      badgeLabel: "New",
-      rating: 4.8,
-      reviews: 14,
-      features: ["Business plan template (Word/Google Doc)", "1-page pitch deck (PowerPoint)", "Client invoice template", "Service agreement template", "Social media content calendar", "90-day launch checklist"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    },
-    {
-      id: 6,
-      title: "BridgeP2P Inner Circle",
-      category: "membership",
-      categoryLabel: "Membership",
-      desc: "Monthly access to all new releases, live coaching calls, and a private community of builders.",
-      longDesc: "Every month you get: 1–2 new e-books or resources, access to a live Q&A/coaching call, a private community of people in your same position working toward the same goals, and early access to new courses.",
-      price: 19.97,
-      originalPrice: null,
-      emoji: "👑",
-      bgClass: "member-bg",
-      badge: null,
-      rating: 4.9,
-      reviews: 22,
-      features: ["1–2 new e-books monthly", "Live monthly coaching call", "Private community access", "Early product access", "Exclusive discounts on all products", "Cancel anytime"],
-      stripeLink: "https://buy.stripe.com/YOUR_LINK_HERE"
-    }
-  ];
+  // Loaded from Firestore (shared across Netlify visitors); localStorage is cache-only.
+  let PRODUCTS = [];
 
   // ── CART STATE ─────────────────────────────────────────────────
   let cart = JSON.parse(localStorage.getItem('bp2p_cart') || '[]');
-
   function saveCart() { localStorage.setItem('bp2p_cart', JSON.stringify(cart)); }
 
   function addToCart(productId) {
@@ -1233,8 +1137,12 @@
   }
 
   // ── INIT ───────────────────────────────────────────────────────
-  renderProducts();
-  updateCartUI();
+  async function initStorefront() {
+    PRODUCTS = await BP2PStore.getProducts();
+    renderProducts();
+    updateCartUI();
+  }
+  initStorefront();
 </script>
 </body>
 </html>
