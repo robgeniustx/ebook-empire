@@ -729,7 +729,7 @@
 <!-- NAVIGATION -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">Bridge<span>P2P</span></a>
+    <a href="index.html" class="logo">Bridge<span>P2P</span></a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#products">Shop</a></li>
       <li><a href="#ebooks">E-Books</a></li>
@@ -796,6 +796,11 @@
       <button class="cat-tab" onclick="filterProducts('membership', this)">Memberships</button>
     </div>
 
+    <div id="ebooks" aria-hidden="true"></div>
+    <div id="courses" aria-hidden="true"></div>
+    <div id="templates" aria-hidden="true"></div>
+    <div id="memberships" aria-hidden="true"></div>
+
     <div class="product-grid" id="productGrid">
       <!-- Products rendered by JS -->
     </div>
@@ -803,7 +808,7 @@
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="how-section">
+<section class="how-section" id="about">
   <div class="section-inner">
     <div class="section-header">
       <div class="section-label">Simple Process</div>
@@ -889,37 +894,41 @@
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo">Bridge<span style="color:var(--accent)">P2P</span></a>
+        <a href="index.html" class="logo">Bridge<span style="color:var(--accent)">P2P</span></a>
         <p>Premium digital products designed to help you build knowledge, discipline, and real income — no matter where you're starting from.</p>
       </div>
       <div class="footer-col">
         <h4>Shop</h4>
         <ul>
-          <li><a href="#">E-Books</a></li>
-          <li><a href="#">Courses</a></li>
-          <li><a href="#">Templates</a></li>
-          <li><a href="#">Memberships</a></li>
+          <li><a href="#ebooks">E-Books</a></li>
+          <li><a href="#courses">Courses</a></li>
+          <li><a href="#templates">Templates</a></li>
+          <li><a href="#memberships">Memberships</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Affiliate Program</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="mailto:support@p2pebookempire.com">Contact</a></li>
+          <li><a href="#products">Affiliate Program</a></li>
           <li><a href="admin.html">Admin Login</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Refund Policy</a></li>
-          <li><a href="#">Disclaimer</a></li>
+          <li><a href="#privacy-policy">Privacy Policy</a></li>
+          <li><a href="#terms-of-service">Terms of Service</a></li>
+          <li><a href="#refund-policy">Refund Policy</a></li>
+          <li><a href="#disclaimer">Disclaimer</a></li>
         </ul>
       </div>
     </div>
+    <div id="privacy-policy" aria-hidden="true"></div>
+    <div id="terms-of-service" aria-hidden="true"></div>
+    <div id="refund-policy" aria-hidden="true"></div>
+    <div id="disclaimer" aria-hidden="true"></div>
     <div class="footer-bottom">
       <span>© 2025 BridgeP2P. All rights reserved.</span>
       <span class="footer-powered">Powered by BridgeP2P · Payments by Stripe</span>
