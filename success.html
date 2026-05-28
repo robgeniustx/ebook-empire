@@ -263,7 +263,7 @@
 
     <div class="no-download" id="noDownload" style="display:none">
       <strong>📧 Check Your Email</strong><br>
-      Your download link has been sent to your email address. If you don't see it within 5 minutes, check your spam folder or contact <strong>robertg@xlr8pressurewashing.com</strong>.
+      Your download link has been sent to your email address. If you don't see it within 5 minutes, check your spam folder or contact <strong>support@p2pebookempire.com</strong>.
     </div>
 
     <div class="actions">
@@ -283,45 +283,40 @@
 </div>
 
 <footer>
-  © 2025 BridgeP2P · Questions? Email <a href="mailto:robertg@xlr8pressurewashing.com" style="color:var(--brand)">robertg@xlr8pressurewashing.com</a>
+  © 2025 BridgeP2P · Questions? Email <a href="mailto:support@p2pebookempire.com" style="color:var(--brand)">support@p2pebookempire.com</a>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/store.js"></script>
 <script>
   // Pull params from URL — Stripe appends ?session_id= when redirecting to success URL
-  // You can also append custom params when building your Stripe payment links
-  // e.g. success URL: https://yourdomain.com/success.html?product=1&amount=19.97
   const params = new URLSearchParams(window.location.search);
   const productId = params.get('product');
   const sessionId = params.get('session_id') || 'STR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-  // Load products from admin's localStorage (same domain)
-  let PRODUCTS = [];
-  try { PRODUCTS = JSON.parse(localStorage.getItem('bp2p_products')) || []; } catch(e) {}
+  async function initSuccessPage() {
+    const PRODUCTS = await BP2PStore.getProducts();
+    const product = PRODUCTS.find(p => p.id === parseInt(productId));
 
-  const product = PRODUCTS.find(p => p.id === parseInt(productId));
+    document.getElementById('odId').textContent = sessionId.substring(0, 20);
+    document.getElementById('odProduct').textContent = product ? product.title : (params.get('name') || 'Digital Product');
+    document.getElementById('odAmount').textContent = product ? `$${product.price.toFixed(2)}` : (params.get('amount') ? `$${params.get('amount')}` : '—');
+    document.getElementById('odDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Populate order details
-  document.getElementById('odId').textContent = sessionId.substring(0, 20);
-  document.getElementById('odProduct').textContent = product ? product.title : (params.get('name') || 'Digital Product');
-  document.getElementById('odAmount').textContent = product ? `$${product.price.toFixed(2)}` : (params.get('amount') ? `$${params.get('amount')}` : '—');
-  document.getElementById('odDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    if (product && product.downloadUrl && product.downloadUrl.length > 5) {
+      document.getElementById('downloadSection').style.display = 'block';
+      document.getElementById('downloadBtn').href = product.downloadUrl;
+    } else {
+      document.getElementById('noDownload').style.display = 'block';
+    }
 
-  // Show download button if product has a download URL
-  if (product && product.downloadUrl && product.downloadUrl.length > 5) {
-    document.getElementById('downloadSection').style.display = 'block';
-    document.getElementById('downloadBtn').href = product.downloadUrl;
-  } else {
-    document.getElementById('noDownload').style.display = 'block';
-  }
-
-  // Record order in admin panel's localStorage
-  if (product) {
-    const email = params.get('email') || '';
-    const name = params.get('customer') || 'Online Customer';
-    const ORDERS = JSON.parse(localStorage.getItem('bp2p_orders') || '[]');
-    const exists = ORDERS.find(o => o.id === sessionId);
-    if (!exists) {
-      ORDERS.push({
+    if (product) {
+      const email = params.get('email') || '';
+      const name = params.get('customer') || 'Online Customer';
+      await BP2PStore.saveOrder({
         id: sessionId,
         name: name,
         email: email,
@@ -330,9 +325,10 @@
         status: 'completed',
         date: new Date().toLocaleDateString()
       });
-      localStorage.setItem('bp2p_orders', JSON.stringify(ORDERS));
     }
   }
+
+  initSuccessPage();
 
   function copyLink() {
     navigator.clipboard.writeText('https://bridgep2p.com').then(() => {
