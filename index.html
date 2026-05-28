@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>P2P ebook empire — Digital Products Store</title>
   <meta name="description" content="Premium digital products to help you rebuild, grow, and rise. E-books, courses, templates and more." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -790,8 +789,8 @@
 
     <div class="category-tabs">
       <button class="cat-tab active" onclick="filterProducts('all', this)">All Products</button>
-      <button class="cat-tab" onclick="filterProducts('ebook', this)">E-Books</button>
-      <button class="cat-tab" onclick="filterProducts('course', this)">Courses</button>
+      <button class="cat-tab" id="ebooks" onclick="filterProducts('ebook', this)">E-Books</button>
+      <button class="cat-tab" id="courses" onclick="filterProducts('course', this)">Courses</button>
       <button class="cat-tab" onclick="filterProducts('template', this)">Templates</button>
       <button class="cat-tab" onclick="filterProducts('membership', this)">Memberships</button>
     </div>
@@ -803,7 +802,7 @@
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="how-section">
+<section class="how-section" id="about">
   <div class="section-inner">
     <div class="section-header">
       <div class="section-label">Simple Process</div>
