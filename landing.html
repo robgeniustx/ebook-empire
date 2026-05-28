@@ -245,7 +245,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">
+    <a href="landing.html" class="logo">
       <div class="logo-text">Bridge<span>P2P</span></div>
     </a>
     <ul class="nav-links" id="navLinks">
@@ -256,7 +256,7 @@
     </ul>
     <div class="nav-cta">
       <a href="auth.html" class="btn-nav-login">Log In</a>
-      <a href="#" class="btn-nav-cta" onclick="openSignup()">Start Free Trial →</a>
+      <a href="#pricing" class="btn-nav-cta" onclick="openSignup(); return false;">Start Free Trial →</a>
       <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('mobile-open')" style="display:none" id="hamburgerBtn">
         <span></span><span></span><span></span>
       </button>
@@ -272,7 +272,7 @@
       <h1>Your Own Digital<br><span class="accent-word">Product Empire</span><br>for <span class="highlight">$9/Month</span></h1>
       <p class="hero-sub">Launch a fully branded digital store. Sell e-books, courses, memberships, and templates. Keep 95% of every dollar you make. No Shopify. No Stan. No middleman taking 30%.</p>
       <div class="hero-ctas">
-        <a href="#" class="btn-hero" onclick="openSignup()">Start 14-Day Free Trial →</a>
+        <a href="#pricing" class="btn-hero" onclick="openSignup(); return false;">Start 14-Day Free Trial →</a>
         <a href="#how" class="btn-hero-outline">See How It Works</a>
       </div>
       <div class="hero-proof">
@@ -635,22 +635,26 @@
     <div class="footer-col">
       <h4>Company</h4>
       <ul>
-        <li><a href="#">About BridgeP2P</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Affiliate Program</a></li>
+        <li><a href="#how">About BridgeP2P</a></li>
+        <li><a href="#faq">Blog</a></li>
+        <li><a href="#pricing">Affiliate Program</a></li>
         <li><a href="mailto:support@p2pebookempire.com">Contact</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Legal</h4>
       <ul>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Refund Policy</a></li>
-        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#privacy-policy">Privacy Policy</a></li>
+        <li><a href="#terms-of-service">Terms of Service</a></li>
+        <li><a href="#refund-policy">Refund Policy</a></li>
+        <li><a href="#cookie-policy">Cookie Policy</a></li>
       </ul>
     </div>
   </div>
+  <div id="privacy-policy" aria-hidden="true"></div>
+  <div id="terms-of-service" aria-hidden="true"></div>
+  <div id="refund-policy" aria-hidden="true"></div>
+  <div id="cookie-policy" aria-hidden="true"></div>
   <div class="footer-bottom">
     <span>© 2025 BridgeP2P · America's Bridge for People 2 Prosperity</span>
     <span>Houston, TX · support@p2pebookempire.com</span>

@@ -74,6 +74,11 @@
 
   <div class="success-banner" id="successBanner"></div>
 
+  <div id="login" aria-hidden="true"></div>
+  <div id="signup" aria-hidden="true"></div>
+  <div id="terms-of-service" aria-hidden="true"></div>
+  <div id="privacy-policy" aria-hidden="true"></div>
+
   <!-- ── LOGIN FORM ── -->
   <form id="loginForm" onsubmit="doLogin(event)">
     <button type="button" class="btn-google" onclick="doGoogleAuth()">
@@ -118,13 +123,13 @@
     </div>
     <div class="terms-row">
       <input type="checkbox" id="termsCheck" required />
-      <label for="termsCheck">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand my 14-day free trial starts now.</label>
+      <label for="termsCheck">I agree to the <a href="#terms-of-service">Terms of Service</a> and <a href="#privacy-policy">Privacy Policy</a>. I understand my 14-day free trial starts now.</label>
     </div>
     <button type="submit" class="btn-submit" id="signupBtn">Create My Account — Free →</button>
   </form>
 
   <div class="auth-footer">
-    <span id="footerText">Don't have an account? <a href="#" onclick="showTab('signup')">Sign up free →</a></span>
+    <span id="footerText">Don't have an account? <a href="#signup" onclick="showTab('signup'); return false;">Sign up free →</a></span>
   </div>
 </div>
 
@@ -179,8 +184,8 @@
     document.getElementById('tabLogin').classList.toggle('active',  tab==='login');
     document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
     document.getElementById('footerText').innerHTML = tab==='login'
-      ? 'Don\'t have an account? <a href="#" onclick="showTab(\'signup\')">Sign up free →</a>'
-      : 'Already have an account? <a href="#" onclick="showTab(\'login\')">Sign in →</a>';
+      ? 'Don\'t have an account? <a href="#signup" onclick="showTab(\'signup\'); return false;">Sign up free →</a>'
+      : 'Already have an account? <a href="#login" onclick="showTab(\'login\'); return false;">Sign in →</a>';
     document.getElementById('successBanner').style.display = 'none';
   }
 
