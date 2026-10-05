@@ -723,6 +723,140 @@
       .cart-sidebar { width: 100vw; }
     }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Product",
+        "name": "From Locked Down to Leveled Up",
+        "description": "The complete re-entry roadmap: housing, income, credit, identity, and mindset \u2014 all in one guide built for real people.",
+        "category": "E-Book",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.97",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "47"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@type": "Product",
+        "name": "The Discipline Code",
+        "description": "Break bad habits, build new systems, and become the person you keep saying you\u2019re going to be.",
+        "category": "E-Book",
+        "offers": {
+          "@type": "Offer",
+          "price": "14.97",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "19"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@type": "Product",
+        "name": "Debt Free Blueprint",
+        "description": "Understand your debt, attack it strategically, and build the financial foundation you never had.",
+        "category": "E-Book",
+        "offers": {
+          "@type": "Offer",
+          "price": "17.97",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "33"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@type": "Product",
+        "name": "From Employee to Entrepreneur",
+        "description": "The complete mindset and mechanics shift from working for someone else to building something of your own.",
+        "category": "Course",
+        "offers": {
+          "@type": "Offer",
+          "price": "47.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5",
+          "reviewCount": "28"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "item": {
+        "@type": "Product",
+        "name": "Business Launch Toolkit",
+        "description": "Every template you need to launch a real business: business plan, pitch deck, invoice, contracts, and more.",
+        "category": "Templates",
+        "offers": {
+          "@type": "Offer",
+          "price": "27.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "14"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "item": {
+        "@type": "Product",
+        "name": "BridgeP2P Inner Circle",
+        "description": "Monthly access to all new releases, live coaching calls, and a private community of builders.",
+        "category": "Membership",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.97",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "22"
+        }
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -797,7 +931,91 @@
     </div>
 
     <div class="product-grid" id="productGrid">
-      <!-- Products rendered by JS -->
+      <!-- SEO: static product cards (keep in sync with PRODUCTS array in script below). JS re-renders this grid on load/filter. -->
+      <div class="product-card" onclick="openModal(1)">
+        
+        <div class="product-img">📗</div>
+        <div class="product-body">
+          <div class="product-category">E-Book</div>
+          <div class="product-title">From Locked Down to Leveled Up</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (47)</div>
+          <div class="product-desc">The complete re-entry roadmap: housing, income, credit, identity, and mindset — all in one guide built for real people.</div>
+          <div class="product-footer">
+            <div class="product-price"><s>$34.99</s>$19.97</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(1)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="openModal(2)">
+        <div class="product-badge new">New</div>
+        <div class="product-img">🔒</div>
+        <div class="product-body">
+          <div class="product-category">E-Book</div>
+          <div class="product-title">The Discipline Code</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 4.8 (19)</div>
+          <div class="product-desc">Break bad habits, build new systems, and become the person you keep saying you’re going to be.</div>
+          <div class="product-footer">
+            <div class="product-price">$14.97</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(2)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="openModal(3)">
+        
+        <div class="product-img">💸</div>
+        <div class="product-body">
+          <div class="product-category">E-Book</div>
+          <div class="product-title">Debt Free Blueprint</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (33)</div>
+          <div class="product-desc">Understand your debt, attack it strategically, and build the financial foundation you never had.</div>
+          <div class="product-footer">
+            <div class="product-price"><s>$29.99</s>$17.97</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(3)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="openModal(4)">
+        <div class="product-badge">🔥 Hot</div>
+        <div class="product-img course-bg">🚀</div>
+        <div class="product-body">
+          <div class="product-category">Course</div>
+          <div class="product-title">From Employee to Entrepreneur</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 5 (28)</div>
+          <div class="product-desc">The complete mindset and mechanics shift from working for someone else to building something of your own.</div>
+          <div class="product-footer">
+            <div class="product-price"><s>$97.00</s>$47.00</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(4)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="openModal(5)">
+        <div class="product-badge new">New</div>
+        <div class="product-img template-bg">🛠️</div>
+        <div class="product-body">
+          <div class="product-category">Templates</div>
+          <div class="product-title">Business Launch Toolkit</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 4.8 (14)</div>
+          <div class="product-desc">Every template you need to launch a real business: business plan, pitch deck, invoice, contracts, and more.</div>
+          <div class="product-footer">
+            <div class="product-price"><s>$49.00</s>$27.00</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(5)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="openModal(6)">
+        
+        <div class="product-img member-bg">👑</div>
+        <div class="product-body">
+          <div class="product-category">Membership</div>
+          <div class="product-title">BridgeP2P Inner Circle</div>
+          <div class="product-rating"><span class="stars">★★★★★</span> 4.9 (22)</div>
+          <div class="product-desc">Monthly access to all new releases, live coaching calls, and a private community of builders.</div>
+          <div class="product-footer">
+            <div class="product-price">$19.97</div>
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(6)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
