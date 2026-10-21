@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        'admin@bridgep2p.com',
+        'admin@p2pebookempire.com',
+        'robertg@xlr8pressurewashing.com'
+      ];
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasAll(['id', 'name', 'product', 'amount', 'status', 'date']);
+      allow update, delete: if isAdmin();
+    }
+
+    match /subscribers/{subscriberId} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasAll(['email', 'date']);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

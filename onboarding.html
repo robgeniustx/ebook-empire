@@ -327,7 +327,7 @@
         <a href="landing.html" class="comp-link">🌐 Share My Link</a>
       </div>
 
-      <p style="margin-top:24px;font-size:0.78rem;opacity:0.7">Need help? Email <a href="mailto:robertg@xlr8pressurewashing.com" style="color:#FFB74D">robertg@xlr8pressurewashing.com</a></p>
+      <p style="margin-top:24px;font-size:0.78rem;opacity:0.7">Need help? Email <a href="mailto:support@p2pebookempire.com" style="color:#FFB74D">support@p2pebookempire.com</a></p>
     </div>
   </div>
 
@@ -335,6 +335,11 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/store.js"></script>
 <script>
   var currentStep = 0;
   var totalSteps  = 5;
@@ -412,21 +417,22 @@
     try { localStorage.setItem('bp2p_store_data', JSON.stringify(storeData)); } catch(e) {}
     // Also apply to products if first product filled
     if (currentStep === 3 && storeData.firstProduct && storeData.firstProduct.title) {
-      var products = JSON.parse(localStorage.getItem('bp2p_products') || '[]');
-      var fp = storeData.firstProduct;
-      var exists = products.find(function(p){ return p.title === fp.title; });
-      if (!exists) {
-        var catLabels = {ebook:'E-Book',course:'Course',templates:'Templates',membership:'Membership'};
-        products.unshift({
-          id: Date.now(), title: fp.title, category: fp.category,
-          categoryLabel: catLabels[fp.category] || 'E-Book',
-          price: fp.price, originalPrice: null, emoji: '📦',
-          desc: fp.desc, longDesc: fp.desc, features: [],
-          stripeLink: storeData.stripeLink || '', downloadUrl: fp.download,
-          bgClass: '', badge: 'new', badgeLabel: 'New', rating: 5.0, reviews: 0
-        });
-        try { localStorage.setItem('bp2p_products', JSON.stringify(products)); } catch(e) {}
-      }
+      BP2PStore.getProducts().then(function(products) {
+        var fp = storeData.firstProduct;
+        var exists = products.find(function(p){ return p.title === fp.title; });
+        if (!exists) {
+          var catLabels = {ebook:'E-Book',course:'Course',templates:'Templates',membership:'Membership'};
+          products.unshift({
+            id: Date.now(), title: fp.title, category: fp.category,
+            categoryLabel: catLabels[fp.category] || 'E-Book',
+            price: fp.price, originalPrice: null, emoji: '📦',
+            desc: fp.desc, longDesc: fp.desc, features: [],
+            stripeLink: storeData.stripeLink || '', downloadUrl: fp.download,
+            bgClass: '', badge: 'new', badgeLabel: 'New', rating: 5.0, reviews: 0
+          });
+          BP2PStore.saveProducts(products);
+        }
+      });
     }
   }
 
